@@ -4,6 +4,8 @@ package net.moltendorf.app.menu.fragment;
  * Created by moltendorf on 16/4/29.
  */
 public class SpecialsFragment extends MenuFragment {
+  public static final String ACTION_SPECIALS = "net.moltendorf.app.menu.SPECIALS";
+
   private static FragmentType TYPE = FragmentType.SPECIALS;
 
   public SpecialsFragment() {

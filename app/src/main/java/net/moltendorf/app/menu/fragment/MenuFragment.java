@@ -12,6 +12,8 @@ import net.moltendorf.app.menu.R;
  * Created by moltendorf on 16/4/29.
  */
 public class MenuFragment extends BaseFragment {
+  public static final String ACTION_MENU = "net.moltendorf.app.menu.MENU";
+
   private static FragmentType TYPE = FragmentType.MENU;
 
   public MenuFragment() {
