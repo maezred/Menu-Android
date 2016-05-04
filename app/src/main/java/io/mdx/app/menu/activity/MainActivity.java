@@ -9,7 +9,7 @@ import android.support.v4.view.ViewPager;
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.fragment.FragmentFactory;
 import io.mdx.app.menu.fragment.MenuFragment;
-import io.mdx.app.menu.fragment.SpecialsFragment;
+import io.mdx.app.menu.fragment.SpecialsPagerFragment;
 
 public class MainActivity extends BaseActivity {
   /**
@@ -54,7 +54,7 @@ public class MainActivity extends BaseActivity {
    */
   public class MainPagerAdapter extends FragmentPagerAdapter {
     private FragmentFactory[] factories = new FragmentFactory[]{
-      new SpecialsFragment.Factory(),
+      new SpecialsPagerFragment.Factory(),
       new MenuFragment.Factory()
     };
 
