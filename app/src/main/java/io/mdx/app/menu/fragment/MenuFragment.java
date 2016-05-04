@@ -1,4 +1,4 @@
-package net.moltendorf.app.menu.fragment;
+package io.mdx.app.menu.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -6,13 +6,13 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import net.moltendorf.app.menu.R;
+import io.mdx.app.menu.R;
 
 /**
  * Created by moltendorf on 16/4/29.
  */
 public class MenuFragment extends BaseFragment {
-  public static final String ACTION_MENU = "net.moltendorf.app.menu.MENU";
+  public static final String ACTION_MENU = "io.mdx.app.menu.MENU";
 
   private static FragmentType TYPE = FragmentType.MENU;
 

@@ -1,4 +1,4 @@
-package net.moltendorf.app.menu.fragment;
+package io.mdx.app.menu.fragment;
 
 /**
  * Created by moltendorf on 16/4/29.

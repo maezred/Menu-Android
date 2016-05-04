@@ -1,4 +1,4 @@
-package net.moltendorf.app.menu;
+package io.mdx.app.menu;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package net.moltendorf.app.menu.fragment;
+package io.mdx.app.menu.fragment;
 
 import android.support.v4.app.Fragment;
 

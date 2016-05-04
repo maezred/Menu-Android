@@ -1,4 +1,4 @@
-package net.moltendorf.app.menu.activity;
+package io.mdx.app.menu.activity;
 
 
 import android.annotation.TargetApi;
@@ -21,7 +21,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
-import net.moltendorf.app.menu.R;
+import io.mdx.app.menu.R;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
-  public static final String ACTION_SETTINGS = "net.moltendorf.app.menu.SETTINGS";
+  public static final String ACTION_SETTINGS = "io.mdx.app.menu.SETTINGS";
 
   /**
    * A preference value change listener that updates the preference's summary

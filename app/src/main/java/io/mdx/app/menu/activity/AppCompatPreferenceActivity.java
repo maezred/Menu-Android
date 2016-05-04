@@ -1,4 +1,4 @@
-package net.moltendorf.app.menu.activity;
+package io.mdx.app.menu.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

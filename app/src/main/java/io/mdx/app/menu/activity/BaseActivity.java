@@ -1,4 +1,4 @@
-package net.moltendorf.app.menu.activity;
+package io.mdx.app.menu.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import net.moltendorf.app.menu.R;
+import io.mdx.app.menu.R;
 
 /**
  * Created by moltendorf on 16/4/29.

@@ -1,4 +1,4 @@
-package net.moltendorf.app.menu.activity;
+package io.mdx.app.menu.activity;
 
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,10 +8,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import net.moltendorf.app.menu.R;
-import net.moltendorf.app.menu.fragment.FragmentFactory;
-import net.moltendorf.app.menu.fragment.MenuFragment;
-import net.moltendorf.app.menu.fragment.SpecialsFragment;
+import io.mdx.app.menu.R;
+import io.mdx.app.menu.fragment.FragmentFactory;
+import io.mdx.app.menu.fragment.MenuFragment;
+import io.mdx.app.menu.fragment.SpecialsFragment;
 
 public class MainActivity extends BaseActivity {
 

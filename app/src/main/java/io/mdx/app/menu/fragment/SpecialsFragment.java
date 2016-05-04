@@ -1,10 +1,10 @@
-package net.moltendorf.app.menu.fragment;
+package io.mdx.app.menu.fragment;
 
 /**
  * Created by moltendorf on 16/4/29.
  */
 public class SpecialsFragment extends MenuFragment {
-  public static final String ACTION_SPECIALS = "net.moltendorf.app.menu.SPECIALS";
+  public static final String ACTION_SPECIALS = "io.mdx.app.menu.SPECIALS";
 
   private static FragmentType TYPE = FragmentType.SPECIALS;
 
