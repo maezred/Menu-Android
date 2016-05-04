@@ -6,12 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +23,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
   private Map<Class<?>, Integer> viewTypeLookup;
   private Factory[]              viewHolderLookup;
-
-  private List<WeakReference<ViewHolder>> holderReferences = new LinkedList<>();
-  private List<EventListener>             eventListeners   = new ArrayList<>();
 
   public RecyclerViewAdapter(Context context, Map<Class<?>, Factory> factories) {
     this(context, factories, new ArrayList(0));
@@ -63,21 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
   @Override
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    try {
-      // Todo: better type safety guarantees using more generics so we don't crash here as often?
-      ViewHolder holder = viewHolderLookup[viewType].createViewHolder(context, parent);
-
-      for (EventListener listener : eventListeners) {
-        setEventListenerBinding("add", holder, listener);
-      }
-
-      // Used to add events after the fact.
-      holderReferences.add(new WeakReference<>(holder));
-
-      return holder;
-    } catch (final Exception exception) {
-      throw new IllegalStateException("Could not construct view holder.", exception);
-    }
+    return viewHolderLookup[viewType].createViewHolder(context, parent);
   }
 
   @Override
@@ -94,62 +73,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     this.dataSet = dataSet;
 
     notifyDataSetChanged();
-  }
-
-  public void addEventListener(EventListener listener) {
-    eventListeners.add(listener);
-
-    // Add event to existing view holders.
-    Iterator<WeakReference<ViewHolder>> iterator = holderReferences.iterator();
-
-    while (iterator.hasNext()) {
-      WeakReference<ViewHolder> holderReference = iterator.next();
-      ViewHolder                holder          = holderReference.get();
-
-      // Since we're using weak references, these can go null if they're destroyed.
-      if (holder == null) {
-        iterator.remove();
-      } else {
-        setEventListenerBinding("add", holder, listener);
-      }
-    }
-  }
-
-  public void removeEventListener(EventListener listener) {
-    eventListeners.remove(listener);
-
-    // Add event to existing view holders.
-    Iterator<WeakReference<ViewHolder>> iterator = holderReferences.iterator();
-
-    while (iterator.hasNext()) {
-      WeakReference<ViewHolder> holderReference = iterator.next();
-      ViewHolder                holder          = holderReference.get();
-
-      // Since we're using weak references, these can go null if they're destroyed.
-      if (holder != null) {
-        setEventListenerBinding("remove", holder, listener);
-      } else {
-        iterator.remove();
-      }
-    }
-  }
-
-  private void setEventListenerBinding(String mode, ViewHolder holder, EventListener listener) {
-    Class<?> holderClass   = holder.getClass();
-    Class<?> listenerClass = listener.getClass().getSuperclass();
-    String   name          = listenerClass.getSimpleName();
-    String   method        = mode + name;
-
-    try {
-      // This is a bad idea. Yeah. Diving right in: dynamically binding event listeners!
-      holderClass.getMethod(method, listenerClass).invoke(holder, listener);
-    } catch (Exception exception) {
-      Log.d(TAG,
-        "setEventListenerBinding: " +
-          "Class " + holderClass.getSimpleName() + " can't " + mode + " " + name + ".\n" +
-          "We are looking for: " + "public void " + method + "(" + name + " listener) { /* ... */ }"
-      );
-    }
   }
 
   public interface Factory<T extends ViewHolder> {
