@@ -6,10 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * More generic implementation of RecyclerView.
@@ -24,11 +26,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
   private Map<Class<?>, Integer> viewTypeLookup;
   private Factory[]              viewHolderLookup;
 
-  public RecyclerViewAdapter(Context context, Map<Class<?>, Factory> factories) {
+  public RecyclerViewAdapter(Context context, Set<Factory> factories) {
     this(context, factories, new ArrayList(0));
   }
 
-  public RecyclerViewAdapter(Context context, Map<Class<?>, Factory> factories, List dataSet) {
+  public RecyclerViewAdapter(Context context, Set<Factory> factories, List dataSet) {
     Log.d(TAG, "PlacesListAdapter: Called.");
 
     this.context = context;
@@ -40,11 +42,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     viewHolderLookup = new Factory[size];
 
     int i = 0;
-    for (Map.Entry<Class<?>, Factory> entry : factories.entrySet()) {
-      viewTypeLookup.put(entry.getKey(), i);
-      viewHolderLookup[i] = entry.getValue();
+    for (Factory factory : factories) {
+      viewTypeLookup.put(factory.getDataClass(), i);
+      viewHolderLookup[i] = factory;
 
-      i++;
+      ++i;
     }
   }
 
@@ -61,7 +63,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
   @Override
   public void onBindViewHolder(ViewHolder holder, int position) {
-    holder.bindTo(dataSet.get(position), position);
+    holder.onBindTo(dataSet.get(position), position);
   }
 
   @Override
@@ -75,11 +77,42 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     notifyDataSetChanged();
   }
 
-  public interface Factory<T extends ViewHolder> {
-    T createViewHolder(Context context, ViewGroup parent);
+  public static abstract class Factory<T extends ViewHolder> {
+    private Class<?> dataClass;
+
+    public Factory() {
+      Class<?> viewHolderClass = (Class<?>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+      dataClass = (Class<?>) ((ParameterizedType) viewHolderClass.getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+
+    public Class<?> getDataClass() {
+      return dataClass;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+
+      if (o instanceof Factory) {
+        Factory factory = (Factory) o;
+
+        return dataClass.equals(factory.dataClass);
+      }
+
+      return false;
+    }
+
+    @Override
+    public final int hashCode() {
+      return dataClass.hashCode();
+    }
+
+    abstract public T createViewHolder(Context context, ViewGroup parent);
   }
 
-  public static abstract class ViewHolder extends RecyclerView.ViewHolder {
+  public static abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
     protected Context context;
 
     public ViewHolder(Context context, ViewGroup viewGroup, int resource) {
@@ -88,6 +121,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
       this.context = context;
     }
 
-    abstract public void bindTo(Object object, int position);
+    private void onBindTo(Object object, int position) {
+      bindTo((T) object, position);
+    }
+
+    abstract public void bindTo(T object, int position);
   }
 }

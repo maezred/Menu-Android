@@ -6,12 +6,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashSet;
 
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.RecyclerViewAdapter;
-import io.mdx.app.menu.model.Special;
 import io.mdx.app.menu.viewholder.SpecialViewHolder;
 
 /**
@@ -37,11 +35,9 @@ public class SpecialsFragment extends BaseFragment {
   }
 
   private void setupList() {
-    Map<Class<?>, RecyclerViewAdapter.Factory> factories = new HashMap<Class<?>, RecyclerViewAdapter.Factory>() {{
-      put(Special.class, new SpecialViewHolder.Factory());
-    }};
-
-    specialsAdapter = new RecyclerViewAdapter(getContext(), factories);
+    specialsAdapter = new RecyclerViewAdapter(getContext(), new LinkedHashSet<RecyclerViewAdapter.Factory>() {{
+      add(new SpecialViewHolder.Factory());
+    }});
 
     list = (RecyclerView) getView();
     list.setLayoutManager(new LinearLayoutManager(getContext()));
