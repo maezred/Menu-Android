@@ -15,7 +15,6 @@ import io.mdx.app.menu.fragment.MenuFragment;
 import io.mdx.app.menu.fragment.SpecialsFragment;
 
 public class MainActivity extends BaseActivity {
-
   /**
    * The {@link android.support.v4.view.PagerAdapter} that will provide
    * fragments for each of the sections. We use a
@@ -24,12 +23,12 @@ public class MainActivity extends BaseActivity {
    * may be best to switch to a
    * {@link android.support.v4.app.FragmentStatePagerAdapter}.
    */
-  private SectionsPagerAdapter mSectionsPagerAdapter;
+  private MainPagerAdapter mainPagerAdapter;
 
   /**
    * The {@link ViewPager} that will host the section contents.
    */
-  private ViewPager mViewPager;
+  private ViewPager viewPager;
 
   public MainActivity() {
     super(R.layout.activity_main);
@@ -38,14 +37,6 @@ public class MainActivity extends BaseActivity {
   @Override
   protected void onViewCreated() {
     super.onViewCreated();
-
-    // Create the adapter that will return a fragment for each of the three
-    // primary sections of the activity.
-    mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-    // Set up the ViewPager with the sections adapter.
-    mViewPager = (ViewPager) findViewById(R.id.container);
-    mViewPager.setAdapter(mSectionsPagerAdapter);
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     fab.setOnClickListener(new View.OnClickListener() {
@@ -56,26 +47,30 @@ public class MainActivity extends BaseActivity {
       }
     });
 
-    createTabs();
+    setupViewPager();
   }
 
-  private void createTabs() {
+  private void setupViewPager() {
+    mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
+
+    viewPager = (ViewPager) findViewById(R.id.container);
+    viewPager.setAdapter(mainPagerAdapter);
+
     TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-    tabs.setupWithViewPager(mViewPager);
+    tabs.setupWithViewPager(viewPager);
   }
-
 
   /**
    * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
    * one of the sections/tabs/pages.
    */
-  public class SectionsPagerAdapter extends FragmentPagerAdapter {
+  public class MainPagerAdapter extends FragmentPagerAdapter {
     private FragmentFactory[] factories = new FragmentFactory[]{
       new SpecialsFragment.Factory(),
       new MenuFragment.Factory()
     };
 
-    public SectionsPagerAdapter(FragmentManager fm) {
+    public MainPagerAdapter(FragmentManager fm) {
       super(fm);
     }
 
