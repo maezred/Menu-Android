@@ -7,8 +7,9 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,8 +27,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
   private Map<Class<?>, Integer> viewTypeLookup;
   private Factory[]              viewHolderLookup;
 
+  public RecyclerViewAdapter(Context context) {
+    this(context, Collections.<Factory>emptySet());
+  }
+
   public RecyclerViewAdapter(Context context, Set<Factory> factories) {
-    this(context, factories, new ArrayList(0));
+    this(context, factories, Collections.EMPTY_LIST);
   }
 
   public RecyclerViewAdapter(Context context, Set<Factory> factories, List dataSet) {
@@ -36,18 +41,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     this.context = context;
     this.dataSet = dataSet;
 
-    // Create lookups.
-    int size = factories.size();
-    viewTypeLookup = new HashMap<>(size);
-    viewHolderLookup = new Factory[size];
-
-    int i = 0;
-    for (Factory factory : factories) {
-      viewTypeLookup.put(factory.getDataClass(), i);
-      viewHolderLookup[i] = factory;
-
-      ++i;
-    }
+    setViewHolders(factories);
   }
 
   @Override
@@ -69,6 +63,44 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
   @Override
   public int getItemCount() {
     return dataSet.size();
+  }
+
+  public void setViewHolders(Class<?>... holders) {
+    Set<Factory> factories = new LinkedHashSet<>();
+
+    outer:
+    for (Class<?> holder : holders) {
+      for (Class<?> possible : holder.getDeclaredClasses()) {
+        if (Factory.class.isAssignableFrom(possible)) {
+          try {
+            factories.add((Factory) possible.newInstance());
+          } catch (Exception exception) {
+            throw new RuntimeException("Could not instantiate Factory.", exception);
+          }
+
+          continue outer;
+        }
+      }
+
+      throw new RuntimeException("No ViewHolder Factory inside of " + holder.getSimpleName());
+    }
+
+    setViewHolders(factories);
+  }
+
+  public void setViewHolders(Set<Factory> factories) {
+    // Create lookups.
+    int size = factories.size();
+    viewTypeLookup = new HashMap<>(size);
+    viewHolderLookup = new Factory[size];
+
+    int i = 0;
+    for (Factory factory : factories) {
+      viewTypeLookup.put(factory.getDataClass(), i);
+      viewHolderLookup[i] = factory;
+
+      ++i;
+    }
   }
 
   public void changeDataSet(List dataSet) {

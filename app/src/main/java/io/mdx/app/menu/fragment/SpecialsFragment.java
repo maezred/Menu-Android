@@ -35,9 +35,8 @@ public class SpecialsFragment extends BaseFragment {
   }
 
   private void setupList() {
-    specialsAdapter = new RecyclerViewAdapter(getContext(), new LinkedHashSet<RecyclerViewAdapter.Factory>() {{
-      add(new SpecialViewHolder.Factory());
-    }});
+    specialsAdapter = new RecyclerViewAdapter(getContext());
+    specialsAdapter.setViewHolders(SpecialViewHolder.class);
 
     list = (RecyclerView) getView();
     list.setLayoutManager(new LinearLayoutManager(getContext()));
