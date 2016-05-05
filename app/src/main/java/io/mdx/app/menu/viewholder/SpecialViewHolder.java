@@ -3,8 +3,9 @@ package io.mdx.app.menu.viewholder;
 import android.content.Context;
 import android.view.ViewGroup;
 
+import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
+
 import io.mdx.app.menu.R;
-import io.mdx.app.menu.RecyclerViewAdapter;
 import io.mdx.app.menu.model.Special;
 
 /**

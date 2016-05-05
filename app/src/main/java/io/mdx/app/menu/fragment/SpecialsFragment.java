@@ -6,10 +6,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import java.util.LinkedHashSet;
+import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
+
 
 import io.mdx.app.menu.R;
-import io.mdx.app.menu.RecyclerViewAdapter;
 import io.mdx.app.menu.viewholder.SpecialViewHolder;
 
 /**
