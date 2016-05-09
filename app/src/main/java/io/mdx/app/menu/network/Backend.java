@@ -5,9 +5,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
-import io.mdx.app.menu.model.Special;
+import io.mdx.app.menu.model.Specials;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -44,6 +43,6 @@ abstract public class Backend {
 
   public interface Service {
     @GET("specials.json")
-    Observable<List<Special>> getSpecials();
+    Observable<Specials> getSpecials();
   }
 }
