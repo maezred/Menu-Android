@@ -9,6 +9,7 @@ import java.util.List;
 
 import io.mdx.app.menu.model.Special;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import rx.Observable;
@@ -30,6 +31,7 @@ abstract public class Backend {
   static {
     Retrofit retrofit = new Retrofit.Builder()
       .baseUrl("https://mexxis.mdx.co/data/")
+      .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
       .addConverterFactory(GsonConverterFactory.create(gson))
       .build();
 
