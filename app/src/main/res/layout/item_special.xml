@@ -1,40 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="horizontal">
+  android:layout_height="match_parent">
 
   <ImageView
     android:id="@+id/item_special_picture"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorSpecialImageBackground"
     android:contentDescription="@string/placeholder_picture_description"/>
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:background="@color/colorSpecialBackground"
+    android:orientation="horizontal"
+    android:padding="@dimen/row_padding">
 
     <TextView
       android:id="@+id/item_special_name"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
-      android:text="@string/placeholder_name"/>
+      android:text="@string/placeholder_name"
+      android:textColor="@color/colorSpecialText"
+      android:textSize="32sp"/>
 
     <TextView
       android:id="@+id/item_special_price"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@string/placeholder_price"/>
+      android:gravity="right"
+      android:maxWidth="134dp"
+      android:text="@string/placeholder_price"
+      android:textColor="@color/colorSpecialText"
+      android:textSize="32sp"/>
   </LinearLayout>
 
   <TextView
     android:id="@+id/item_special_description"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
+    android:layout_gravity="bottom"
+    android:background="@color/colorSpecialBackground"
     android:maxLines="3"
-    android:text="@string/placeholder_description"/>
-</RelativeLayout>
+    android:padding="@dimen/row_padding"
+    android:text="@string/placeholder_description"
+    android:textColor="@color/colorSpecialText"
+    android:textSize="24sp"/>
+</FrameLayout>

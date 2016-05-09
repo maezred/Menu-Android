@@ -5,6 +5,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
 import io.mdx.app.menu.R;
@@ -28,6 +30,10 @@ public class SpecialViewHolder extends RecyclerViewAdapter.ViewHolder<SpecialIte
     name.setText(object.getName());
     price.setText(object.getPrice());
     description.setText(object.getDescription());
+
+    if (object.getPicture() != null && !object.getPicture().isEmpty()) {
+      Picasso.with(context).load(object.getPicture()).fit().centerCrop().into(picture);
+    }
   }
 
   public static class Factory extends RecyclerViewAdapter.Factory<SpecialViewHolder> {
