@@ -25,7 +25,7 @@ abstract public class Backend {
       }
     }).create();
 
-  private static Backend service;
+  private static Service service;
 
   static {
     Retrofit retrofit = new Retrofit.Builder()
@@ -33,13 +33,15 @@ abstract public class Backend {
       .addConverterFactory(GsonConverterFactory.create(gson))
       .build();
 
-    service = retrofit.create(Backend.class);
+    service = retrofit.create(Service.class);
   }
 
-  public static Backend getService() {
+  public static Service getService() {
     return service;
   }
 
-  @GET("specials.json")
-  abstract public Observable<List<Special>> getSpecials();
+  public interface Service {
+    @GET("specials.json")
+    Observable<List<Special>> getSpecials();
+  }
 }
