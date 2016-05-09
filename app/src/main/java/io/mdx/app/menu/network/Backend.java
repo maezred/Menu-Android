@@ -39,4 +39,7 @@ abstract public class Backend {
   public static Backend getService() {
     return service;
   }
+
+  @GET("specials.json")
+  abstract public Observable<List<Special>> getSpecials();
 }
