@@ -64,4 +64,5 @@
   <string name="placeholder_price">Price</string>
   <string name="placeholder_description">Description</string>
   <string name="placeholder_picture_description">Picture</string>
+  <string name="placeholder_section">Section</string>
 </resources>

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.TextView;
 
 import io.mdx.app.menu.R;
 
@@ -22,14 +21,11 @@ public class MenuFragment extends BaseFragment {
 
   @SuppressLint("ValidFragment")
   protected MenuFragment(FragmentType type) {
-    super(type, R.layout.fragment_main);
+    super(type, R.layout.fragment_menu);
   }
 
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    TextView textView = (TextView) view.findViewById(R.id.section_label);
-    textView.setText(type.getPageTitle());
-
     super.onViewCreated(view, savedInstanceState);
   }
 
