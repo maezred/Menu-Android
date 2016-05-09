@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
   android:id="@+id/main_content"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,6 +7,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:fitsSystemWindows="true"
+  android:orientation="vertical"
   tools:context=".activity.MainActivity">
 
   <android.support.design.widget.AppBarLayout
@@ -17,7 +18,7 @@
 
     <RelativeLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="?attr/actionBarSize">
 
       <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -40,4 +41,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
