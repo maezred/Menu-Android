@@ -1,7 +1,5 @@
 package io.mdx.app.menu.model;
 
-import android.view.MenuItem;
-
 import java.util.List;
 
 /**
