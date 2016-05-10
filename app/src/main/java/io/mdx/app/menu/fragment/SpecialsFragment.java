@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
@@ -90,6 +91,28 @@ public class SpecialsFragment extends BaseFragment {
     list = (RecyclerView) getView();
     list.setLayoutManager(new LinearLayoutManager(getContext()));
     list.setAdapter(specialsAdapter);
+
+    list.setOnTouchListener(new View.OnTouchListener() {
+      private int position = 0;
+
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+          case MotionEvent.ACTION_UP:
+            int current = list.computeVerticalScrollOffset();
+            int previous = position * list.getHeight();
+
+            // Very simple, does not use velocity. May feel buggy if the user scrolls one direction then goes the other.
+            if (current > previous) {
+              list.smoothScrollToPosition(++position);
+            } else if (current < previous) {
+              list.smoothScrollToPosition(--position);
+            }
+        }
+
+        return false;
+      }
+    });
   }
 
   public static class Factory implements FragmentFactory<SpecialsFragment> {
