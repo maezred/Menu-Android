@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+  android:id="@+id/item_menu_section"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@color/colorPrimary"
+  android:padding="@dimen/row_padding"
+  android:text="@string/placeholder_section"
+  android:textColor="@color/colorSpecialText"
+  android:textSize="24sp"/>
