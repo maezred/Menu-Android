@@ -8,6 +8,9 @@ import android.view.View;
 
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.model.Specials;
 import io.mdx.app.menu.network.Backend;
@@ -26,6 +29,8 @@ public class SpecialsFragment extends BaseFragment {
 
   private static FragmentType TYPE = FragmentType.SPECIALS;
 
+  List data = new ArrayList();
+
   private RecyclerViewAdapter specialsAdapter;
   private RecyclerView        list;
 
@@ -37,7 +42,6 @@ public class SpecialsFragment extends BaseFragment {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    createAdapter();
     fetchSpecials();
   }
 
@@ -45,12 +49,14 @@ public class SpecialsFragment extends BaseFragment {
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
+    createAdapter();
     setupList();
   }
 
   private void createAdapter() {
     specialsAdapter = new RecyclerViewAdapter(getContext());
     specialsAdapter.setViewHolders(SpecialViewHolder.class);
+    specialsAdapter.changeDataSet(data);
   }
 
   private void fetchSpecials() {
@@ -71,7 +77,11 @@ public class SpecialsFragment extends BaseFragment {
 
         @Override
         public void onNext(Specials specials) {
-          specialsAdapter.changeDataSet(specials.getItems());
+          data = specials.getItems();
+
+          if (specialsAdapter != null) {
+            specialsAdapter.changeDataSet(data);
+          }
         }
       });
   }
