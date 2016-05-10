@@ -35,7 +35,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:gravity="right"
-      android:maxWidth="134dp"
+      android:maxWidth="144dp"
       android:text="@string/placeholder_price"
       android:textColor="@color/colorSpecialText"
       android:textSize="24sp"/>
