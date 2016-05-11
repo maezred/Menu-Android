@@ -37,8 +37,13 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     compile 'io.reactivex:rxandroid:1.2.0'
-    compile 'io.reactivex:rxandroid-framework:0.25.0'
     compile 'io.reactivex:rxjava:1.1.5'
+
+    testCompile('io.reactivex:rxandroid-framework:0.25.0') {
+        exclude group: "com.android.support", module: "support-annotations"
+        exclude group: "com.android.support", module: "support-v4"
+        exclude group: "io.reactivex", module: "rxjava"
+    }
 
     compile 'com.jakewharton.timber:timber:4.1.2'
 
