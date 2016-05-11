@@ -41,5 +41,8 @@ dependencies {
 
     compile 'com.jakewharton.timber:timber:4.1.2'
 
+    compile 'com.trello:rxlifecycle:0.6.0'
+    compile 'com.trello:rxlifecycle-components:0.6.0'
+
     compile 'com.github.moltendorf:RecyclerViewAdapter:0.5'
 }
