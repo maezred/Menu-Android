@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.trello.rxlifecycle.FragmentEvent;
+
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -16,7 +18,6 @@ import io.mdx.app.menu.R;
 import io.mdx.app.menu.model.Specials;
 import io.mdx.app.menu.network.Backend;
 import io.mdx.app.menu.viewholder.SpecialViewHolder;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -61,9 +62,9 @@ public class SpecialsFragment extends BaseFragment {
   }
 
   private void fetchSpecials() {
-    Observable<Specials> observable = Backend.getService().getSpecials();
-
-    observable.subscribeOn(Schedulers.newThread())
+    Backend.getService().getSpecials()
+      .compose(this.<Specials>bindUntilEvent(FragmentEvent.DESTROY))
+      .subscribeOn(Schedulers.newThread())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(new Subscriber<Specials>() {
         @Override

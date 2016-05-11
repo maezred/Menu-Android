@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.trello.rxlifecycle.FragmentEvent;
+
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -17,7 +19,6 @@ import io.mdx.app.menu.model.MenuSection;
 import io.mdx.app.menu.network.Backend;
 import io.mdx.app.menu.viewholder.MenuItemViewHolder;
 import io.mdx.app.menu.viewholder.MenuSectionViewHolder;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -58,9 +59,9 @@ public class MenuFragment extends BaseFragment {
   }
 
   private void fetchMenu() {
-    Observable<Menu> observable = Backend.getService().getMenu();
-
-    observable.subscribeOn(Schedulers.newThread())
+    Backend.getService().getMenu()
+      .compose(this.<Menu>bindUntilEvent(FragmentEvent.DESTROY))
+      .subscribeOn(Schedulers.newThread())
       .observeOn(AndroidSchedulers.mainThread())
       .map(new Func1<Menu, List>() {
         @Override
