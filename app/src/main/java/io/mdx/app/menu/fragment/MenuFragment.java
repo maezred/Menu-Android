@@ -20,6 +20,7 @@ import io.mdx.app.menu.viewholder.MenuSectionViewHolder;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -61,7 +62,20 @@ public class MenuFragment extends BaseFragment {
 
     observable.subscribeOn(Schedulers.newThread())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(new Subscriber<Menu>() {
+      .map(new Func1<Menu, List>() {
+        @Override
+        public List call(Menu menu) {
+          List list = new ArrayList();
+
+          for (MenuSection section : menu.getSections()) {
+            list.add(section);
+            list.addAll(section.getItems());
+          }
+
+          return list;
+        }
+      })
+      .subscribe(new Subscriber<List>() {
         @Override
         public void onCompleted() {
 
@@ -73,13 +87,8 @@ public class MenuFragment extends BaseFragment {
         }
 
         @Override
-        public void onNext(Menu menu) {
-          data.clear();
-
-          for (MenuSection section : menu.getSections()) {
-            data.add(section);
-            data.addAll(section.getItems());
-          }
+        public void onNext(List list) {
+          data = list;
 
           if (menuAdapter != null) {
             menuAdapter.changeDataSet(data);
