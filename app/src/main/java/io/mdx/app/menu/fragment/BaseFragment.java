@@ -3,16 +3,17 @@ package io.mdx.app.menu.fragment;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.trello.rxlifecycle.components.support.RxFragment;
 
 /**
  * Created by moltendorf on 16/4/29.
  */
 @SuppressLint("ValidFragment")
-public class BaseFragment extends Fragment {
+public class BaseFragment extends RxFragment {
   protected FragmentType type;
   private   int          layout;
 
