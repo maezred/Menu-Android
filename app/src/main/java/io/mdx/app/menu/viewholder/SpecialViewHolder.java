@@ -10,12 +10,12 @@ import com.squareup.picasso.Picasso;
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
 import io.mdx.app.menu.R;
-import io.mdx.app.menu.model.SpecialItem;
+import io.mdx.app.menu.model.MenuItem;
 
 /**
  * Created by moltendorf on 16/5/4.
  */
-public class SpecialViewHolder extends RecyclerViewAdapter.ViewHolder<SpecialItem> {
+public class SpecialViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> {
   public SpecialViewHolder(Context context, ViewGroup viewGroup) {
     super(context, viewGroup, R.layout.item_special);
   }

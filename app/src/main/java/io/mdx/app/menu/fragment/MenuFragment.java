@@ -16,7 +16,7 @@ import java.util.List;
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.model.Menu;
 import io.mdx.app.menu.model.MenuSection;
-import io.mdx.app.menu.network.Backend;
+import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.viewholder.MenuItemViewHolder;
 import io.mdx.app.menu.viewholder.MenuSectionViewHolder;
 import rx.Subscriber;
@@ -59,7 +59,7 @@ public class MenuFragment extends BaseFragment {
   }
 
   private void fetchMenu() {
-    Backend.getService().getMenu()
+    Backend.getMenu()
       .compose(this.<Menu>bindUntilEvent(FragmentEvent.DESTROY))
       .subscribeOn(Schedulers.newThread())
       .observeOn(AndroidSchedulers.mainThread())
