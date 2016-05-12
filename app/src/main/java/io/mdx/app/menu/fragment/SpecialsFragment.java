@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mdx.app.menu.R;
+import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.model.Specials;
-import io.mdx.app.menu.network.Backend;
 import io.mdx.app.menu.viewholder.SpecialViewHolder;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

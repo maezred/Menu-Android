@@ -1,4 +1,4 @@
-package io.mdx.app.menu.network;
+package io.mdx.app.menu.data;
 
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
