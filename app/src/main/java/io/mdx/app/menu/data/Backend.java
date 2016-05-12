@@ -19,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import rx.Observable;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by moltendorf on 16/5/9.
@@ -49,47 +50,53 @@ abstract public class Backend {
   }
 
   public static Observable<Specials> getSpecials() {
-    return service.getSpecials().zipWith(Database.getFavorites(), new Func2<Specials, List<MenuItem>, Specials>() {
-      @Override
-      public Specials call(Specials specials, List<MenuItem> favorites) {
-        Map<String, MenuItem> favoriteLookup = new HashMap<>();
+    return service.getSpecials()
+      .subscribeOn(Schedulers.io())
+      .observeOn(Schedulers.computation())
+      .zipWith(Database.getFavorites(), new Func2<Specials, List<MenuItem>, Specials>() {
+        @Override
+        public Specials call(Specials specials, List<MenuItem> favorites) {
+          Map<String, MenuItem> favoriteLookup = new HashMap<>();
 
-        for (MenuItem favorite : favorites) {
-          favoriteLookup.put(favorite.getName(), favorite);
-        }
-
-        for (MenuItem special : specials.getItems()) {
-          if (favoriteLookup.containsKey(special.getName())) {
-            special.setFavorite(true);
+          for (MenuItem favorite : favorites) {
+            favoriteLookup.put(favorite.getName(), favorite);
           }
-        }
 
-        return specials;
-      }
-    });
+          for (MenuItem special : specials.getItems()) {
+            if (favoriteLookup.containsKey(special.getName())) {
+              special.setFavorite(true);
+            }
+          }
+
+          return specials;
+        }
+      });
   }
 
   public static Observable<Menu> getMenu() {
-    return service.getMenu().zipWith(Database.getFavorites(), new Func2<Menu, List<MenuItem>, Menu>() {
-      @Override
-      public Menu call(Menu menu, List<MenuItem> favorites) {
-        Map<String, MenuItem> favoriteLookup = new HashMap<>();
+    return service.getMenu()
+      .subscribeOn(Schedulers.io())
+      .observeOn(Schedulers.computation())
+      .zipWith(Database.getFavorites(), new Func2<Menu, List<MenuItem>, Menu>() {
+        @Override
+        public Menu call(Menu menu, List<MenuItem> favorites) {
+          Map<String, MenuItem> favoriteLookup = new HashMap<>();
 
-        for (MenuItem favorite : favorites) {
-          favoriteLookup.put(favorite.getName(), favorite);
-        }
+          for (MenuItem favorite : favorites) {
+            favoriteLookup.put(favorite.getName(), favorite);
+          }
 
-        for (MenuSection section : menu.getSections()) {
-          for (MenuItem item : section.getItems()) {
-            if (favoriteLookup.containsKey(item.getName())) {
-              item.setFavorite(true);
+          for (MenuSection section : menu.getSections()) {
+            for (MenuItem item : section.getItems()) {
+              if (favoriteLookup.containsKey(item.getName())) {
+                item.setFavorite(true);
+              }
             }
           }
-        }
 
-        return menu;
-      }
-    });
+          return menu;
+        }
+      });
   }
 
   public interface Service {

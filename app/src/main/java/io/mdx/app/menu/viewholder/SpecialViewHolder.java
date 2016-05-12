@@ -23,20 +23,21 @@ public class SpecialViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> 
   public SpecialViewHolder(Context context, ViewGroup viewGroup) {
     super(context, viewGroup, R.layout.item_special);
 
-    RxView.clicks(itemView.findViewById(R.id.item_special_favorite)).subscribe(new Action1<Void>() {
-      @Override
-      public void call(Void aVoid) {
-        boolean favorite = object.getFavorite();
+    RxView.clicks(itemView.findViewById(R.id.item_special_favorite))
+      .subscribe(new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+          boolean favorite = object.getFavorite();
 
-        if (favorite) {
-          Database.removeFavorite(object);
-        } else {
-          Database.addFavorite(object);
+          if (favorite) {
+            Database.removeFavorite(object);
+          } else {
+            Database.addFavorite(object);
+          }
+
+          object.setFavorite(!favorite);
         }
-
-        object.setFavorite(!favorite);
-      }
-    });
+      });
   }
 
   @Override

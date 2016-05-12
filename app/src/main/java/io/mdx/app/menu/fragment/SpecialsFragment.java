@@ -18,10 +18,8 @@ import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.model.Specials;
 import io.mdx.app.menu.viewholder.SpecialViewHolder;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
+import rx.functions.Action1;
 
 /**
  * Created by moltendorf on 16/4/29.
@@ -64,21 +62,10 @@ public class SpecialsFragment extends BaseFragment {
   private void fetchSpecials() {
     Backend.getSpecials()
       .compose(this.<Specials>bindUntilEvent(FragmentEvent.DESTROY))
-      .subscribeOn(Schedulers.newThread())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(new Subscriber<Specials>() {
+      .subscribe(new Action1<Specials>() {
         @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-          Timber.e(e.getMessage());
-        }
-
-        @Override
-        public void onNext(Specials specials) {
+        public void call(Specials specials) {
           data = specials.getItems();
 
           if (specialsAdapter != null) {
