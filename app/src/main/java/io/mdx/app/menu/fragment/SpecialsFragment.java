@@ -62,7 +62,7 @@ public class SpecialsFragment extends BaseFragment {
   }
 
   private void fetchSpecials() {
-    Backend.getService().getSpecials()
+    Backend.getSpecials()
       .compose(this.<Specials>bindUntilEvent(FragmentEvent.DESTROY))
       .subscribeOn(Schedulers.newThread())
       .observeOn(AndroidSchedulers.mainThread())

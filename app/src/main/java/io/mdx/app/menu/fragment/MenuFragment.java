@@ -59,7 +59,7 @@ public class MenuFragment extends BaseFragment {
   }
 
   private void fetchMenu() {
-    Backend.getService().getMenu()
+    Backend.getMenu()
       .compose(this.<Menu>bindUntilEvent(FragmentEvent.DESTROY))
       .subscribeOn(Schedulers.newThread())
       .observeOn(AndroidSchedulers.mainThread())
