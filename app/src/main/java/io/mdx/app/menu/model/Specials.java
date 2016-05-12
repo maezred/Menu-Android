@@ -6,14 +6,14 @@ import java.util.List;
  * Created by moltendorf on 16/5/9.
  */
 public class Specials {
-  private Long              _updated;
-  private List<SpecialItem> _items;
+  private Long           _updated;
+  private List<MenuItem> _items;
 
   public Long getUpdated() {
     return _updated;
   }
 
-  public List<SpecialItem> getItems() {
+  public List<MenuItem> getItems() {
     return _items;
   }
 }
