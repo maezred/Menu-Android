@@ -1,4 +1,4 @@
-package io.mdx.app.menu.viewholder;
+package io.mdx.app.menu.view;
 
 import android.content.Context;
 import android.view.ViewGroup;
@@ -17,13 +17,13 @@ import io.mdx.app.menu.model.MenuItem;
 import rx.functions.Action1;
 
 /**
- * Created by moltendorf on 16/5/4.
+ * Created by moltendorf on 16/5/9.
  */
-public class SpecialViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> {
-  public SpecialViewHolder(Context context, ViewGroup viewGroup) {
-    super(context, viewGroup, R.layout.item_special);
+public class ItemHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> {
+  public ItemHolder(Context context, ViewGroup viewGroup, int resource) {
+    super(context, viewGroup, resource);
 
-    RxView.clicks(itemView.findViewById(R.id.item_special_favorite))
+    RxView.clicks(itemView.findViewById(R.id.item_favorite))
       .subscribe(new Action1<Void>() {
         @Override
         public void call(Void aVoid) {
@@ -42,11 +42,11 @@ public class SpecialViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> 
 
   @Override
   public void bindTo() {
-    TextView  name        = (TextView) itemView.findViewById(R.id.item_special_name);
-    TextView  price       = (TextView) itemView.findViewById(R.id.item_special_price);
-    TextView  description = (TextView) itemView.findViewById(R.id.item_special_description);
-    ImageView picture     = (ImageView) itemView.findViewById(R.id.item_special_picture);
-    CheckBox  favorite    = (CheckBox) itemView.findViewById(R.id.item_special_favorite);
+    TextView  name        = (TextView) itemView.findViewById(R.id.item_name);
+    TextView  price       = (TextView) itemView.findViewById(R.id.item_price);
+    TextView  description = (TextView) itemView.findViewById(R.id.item_description);
+    ImageView picture     = (ImageView) itemView.findViewById(R.id.item_picture);
+    CheckBox  favorite    = (CheckBox) itemView.findViewById(R.id.item_favorite);
 
     name.setText(object.getName());
     price.setText(object.getPrice());
@@ -59,10 +59,16 @@ public class SpecialViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> 
     favorite.setChecked(object.getFavorite());
   }
 
-  public static class Factory extends RecyclerViewAdapter.Factory<SpecialViewHolder> {
+  public static class Factory extends RecyclerViewAdapter.Factory<ItemHolder> {
+    private int resource;
+
+    public Factory(int resource) {
+      this.resource = resource;
+    }
+
     @Override
-    public SpecialViewHolder createViewHolder(Context context, ViewGroup parent) {
-      return new SpecialViewHolder(context, parent);
+    public ItemHolder createViewHolder(Context context, ViewGroup parent) {
+      return new ItemHolder(context, parent, resource);
     }
   }
 }

@@ -1,24 +1,19 @@
 package io.mdx.app.menu.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-
 import com.trello.rxlifecycle.FragmentEvent;
 
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.model.Menu;
 import io.mdx.app.menu.model.MenuSection;
-import io.mdx.app.menu.viewholder.MenuItemViewHolder;
-import io.mdx.app.menu.viewholder.MenuSectionViewHolder;
+import io.mdx.app.menu.view.ItemHolder;
+import io.mdx.app.menu.view.SectionHolder;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -26,37 +21,23 @@ import rx.functions.Func1;
 /**
  * Created by moltendorf on 16/4/29.
  */
-public class MenuFragment extends BaseFragment {
+public class MenuFragment extends RecyclerFragment {
   public static final String ACTION_MENU = "io.mdx.app.menu.MENU";
 
   private static FragmentType TYPE = FragmentType.MENU;
 
-  private List data = new ArrayList();
-
-  private RecyclerViewAdapter menuAdapter;
-  private RecyclerView        list;
-
   public MenuFragment() {
-    super(TYPE, R.layout.fragment_menu);
-
-    fetchMenu();
+    super(R.layout.fragment_menu);
   }
 
   @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-
-    createAdapter();
-    setupList();
+  public void populateFactories(Set<RecyclerViewAdapter.Factory> factories) {
+    factories.add(new ItemHolder.Factory(R.layout.row_menu_item));
+    factories.add(new SectionHolder.Factory(R.layout.row_menu_section));
   }
 
-  private void createAdapter() {
-    menuAdapter = new RecyclerViewAdapter(getContext());
-    menuAdapter.setViewHolders(MenuSectionViewHolder.class, MenuItemViewHolder.class);
-    menuAdapter.changeDataSet(data);
-  }
-
-  private void fetchMenu() {
+  @Override
+  public void fetchData() {
     Backend.getMenu()
       .compose(this.<Menu>bindUntilEvent(FragmentEvent.DESTROY))
       .map(new Func1<Menu, List>() {
@@ -76,19 +57,9 @@ public class MenuFragment extends BaseFragment {
       .subscribe(new Action1<List>() {
         @Override
         public void call(List list) {
-          data = list;
-
-          if (menuAdapter != null) {
-            menuAdapter.changeDataSet(data);
-          }
+          changeDataSet(list);
         }
       });
-  }
-
-  private void setupList() {
-    list = (RecyclerView) getView();
-    list.setLayoutManager(new LinearLayoutManager(getContext()));
-    list.setAdapter(menuAdapter);
   }
 
   public static class Factory implements FragmentFactory<MenuFragment> {
