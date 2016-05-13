@@ -7,5 +7,5 @@
   android:background="@color/colorPrimary"
   android:padding="@dimen/row_padding"
   android:text="@string/placeholder_section"
-  android:textColor="@color/colorSpecialText"
+  android:textColor="@color/colorRowText"
   android:textSize="24sp"/>

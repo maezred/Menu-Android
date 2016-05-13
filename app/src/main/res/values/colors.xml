@@ -3,7 +3,7 @@
   <color name="colorPrimary">#3F51B5</color>
   <color name="colorPrimaryDark">#303F9F</color>
   <color name="colorAccent">#FF4081</color>
-  <color name="colorSpecialText">#DDFFFFFF</color>
-  <color name="colorSpecialBackground">#88000000</color>
-  <color name="colorSpecialImageBackground">#888888</color>
+  <color name="colorRowText">#DDFFFFFF</color>
+  <color name="colorRowTextBackground">#88000000</color>
+  <color name="colorRowBackground">#888888</color>
 </resources>
