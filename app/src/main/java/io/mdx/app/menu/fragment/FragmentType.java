@@ -5,7 +5,8 @@ package io.mdx.app.menu.fragment;
  */
 public enum FragmentType {
   MENU("Menu"),
-  SPECIALS("Specials");
+  SPECIALS("Specials"),
+  FAVORITES("Favorites");
 
   final private String pageTitle;
 
