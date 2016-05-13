@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import io.mdx.app.menu.data.Bus;
 import io.mdx.app.menu.model.MenuItem;
 import timber.log.Timber;
 
@@ -22,6 +23,12 @@ public class Favorites {
   public static final String C_PRICE       = "price";
   public static final String C_DESCRIPTION = "description";
   public static final String C_PICTURE     = "picture";
+
+  private static Bus<FavoritesEvent> eventBus = new Bus<>();
+
+  public static Bus<FavoritesEvent> getEventBus() {
+    return eventBus;
+  }
 
   public static Runnable createTable(final SQLiteDatabase db) {
     return new Runnable() {
@@ -94,5 +101,29 @@ public class Favorites {
         db.execSQL(SQL.REMOVE_FAVORITE, new String[]{item.getName()});
       }
     };
+  }
+
+  public static class FavoritesEvent {
+    private Type     type;
+    private MenuItem item;
+
+    public FavoritesEvent(Type type, MenuItem item) {
+      this.type = type;
+      this.item = item;
+    }
+
+    public Type getType() {
+      return type;
+    }
+
+    public MenuItem getItem() {
+      return item;
+    }
+
+    public enum Type {
+      ADD,
+      REMOVE,
+      UPDATE
+    }
   }
 }
