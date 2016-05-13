@@ -49,7 +49,7 @@ public class Favorites {
       .map(new Func1<Cursor, List<MenuItem>>() {
         @Override
         public List<MenuItem> call(Cursor cursor) {
-          List<MenuItem> items = new ArrayList<>();
+          List<MenuItem> items = new ArrayList<>(cursor.getCount());
           cursor.moveToFirst();
 
           while (!cursor.isAfterLast()) {
