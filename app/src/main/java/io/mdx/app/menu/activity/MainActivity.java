@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import io.mdx.app.menu.R;
+import io.mdx.app.menu.fragment.FavoritesFragment;
 import io.mdx.app.menu.fragment.FragmentFactory;
 import io.mdx.app.menu.fragment.MenuFragment;
 import io.mdx.app.menu.fragment.SpecialsFragment;
@@ -55,7 +56,8 @@ public class MainActivity extends BaseActivity {
   public class MainPagerAdapter extends FragmentPagerAdapter {
     private FragmentFactory[] factories = new FragmentFactory[]{
       new SpecialsFragment.Factory(),
-      new MenuFragment.Factory()
+      new MenuFragment.Factory(),
+      new FavoritesFragment.Factory()
     };
 
     public MainPagerAdapter(FragmentManager fm) {
