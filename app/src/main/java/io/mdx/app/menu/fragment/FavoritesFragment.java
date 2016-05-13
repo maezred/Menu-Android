@@ -45,6 +45,19 @@ public class FavoritesFragment extends RecyclerFragment {
       });
   }
 
+  @Override
+  public void setUserVisibleHint(boolean isVisibleToUser) {
+    super.setUserVisibleHint(isVisibleToUser);
+
+    if (!isVisibleToUser) {
+      if (subscription != null && !subscription.isUnsubscribed()) {
+        subscription.unsubscribe();
+      }
+
+      fetchData();
+    }
+  }
+
   public static class Factory implements FragmentFactory<FavoritesFragment> {
     @Override
     public FragmentType getType() {

@@ -31,7 +31,7 @@ abstract public class RecyclerFragment extends RxFragment {
   protected RecyclerViewAdapter adapter;
   protected List data = new ArrayList();
   protected RecyclerView list;
-  private   Subscription subscription;
+  protected Subscription subscription;
 
   private int layout;
 
@@ -49,12 +49,14 @@ abstract public class RecyclerFragment extends RxFragment {
       .subscribe(new Action1<Favorites.FavoritesEvent>() {
         @Override
         public void call(Favorites.FavoritesEvent favoritesEvent) {
-          // @todo Use a scalpel and inject/replace the row directly into the view.
-          if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-          }
+          if (!getUserVisibleHint()) {
+            // @todo Use a scalpel and inject/replace the row directly into the view.
+            if (subscription != null && !subscription.isUnsubscribed()) {
+              subscription.unsubscribe();
+            }
 
-          fetchData();
+            fetchData();
+          }
         }
       });
   }
