@@ -1,70 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:orientation="vertical">
+  android:layout_height="wrap_content">
 
   <ImageView
     android:id="@+id/item_picture"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorSpecialImageBackground"
+    android:background="@color/colorRowBackground"
     android:contentDescription="@string/placeholder_picture_description"/>
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorSpecialBackground"
-    android:orientation="horizontal"
-    android:paddingLeft="@dimen/row_padding"
-    android:paddingRight="@dimen/row_padding"
-    android:paddingTop="@dimen/row_padding">
+    android:background="@color/colorRowTextBackground"
+    android:orientation="vertical">
 
-    <TextView
-      android:id="@+id/item_name"
-      android:layout_width="0dp"
+    <LinearLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:text="@string/placeholder_name"
-      android:textColor="@color/colorSpecialText"
-      android:textSize="24sp"/>
-
-    <TextView
-      android:id="@+id/item_price"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:gravity="right"
-      android:maxWidth="144dp"
-      android:text="@string/placeholder_price"
-      android:textColor="@color/colorSpecialText"
-      android:textSize="24sp"/>
-  </LinearLayout>
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorSpecialBackground"
-    android:orientation="horizontal">
-
-    <TextView
-      android:id="@+id/item_description"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:maxLines="3"
-      android:paddingBottom="@dimen/row_padding"
+      android:orientation="horizontal"
       android:paddingLeft="@dimen/row_padding"
-      android:paddingTop="@dimen/row_padding"
-      android:text="@string/placeholder_description"
-      android:textColor="@color/colorSpecialText"
-      android:textSize="20sp"/>
+      android:paddingRight="@dimen/row_padding"
+      android:paddingTop="@dimen/row_padding">
 
-    <CheckBox
-      android:id="@+id/item_favorite"
-      android:layout_width="wrap_content"
+      <TextView
+        android:id="@+id/item_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/placeholder_name"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp"/>
+
+      <TextView
+        android:id="@+id/item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:maxWidth="144dp"
+        android:text="@string/placeholder_price"
+        android:textColor="@color/colorAccent"
+        android:textSize="24sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:button="@android:drawable/btn_star"
-      android:padding="@dimen/row_padding"/>
+      android:gravity="bottom"
+      android:orientation="horizontal">
+
+      <TextView
+        android:id="@+id/item_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:maxLines="3"
+        android:paddingBottom="@dimen/row_padding"
+        android:paddingLeft="@dimen/row_padding"
+        android:paddingTop="@dimen/row_padding"
+        android:text="@string/placeholder_description"
+        android:textColor="@color/colorRowText"
+        android:textSize="20sp"/>
+
+      <CheckBox
+        android:id="@+id/item_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:button="@android:drawable/btn_star"
+        android:padding="@dimen/row_padding"/>
+    </LinearLayout>
   </LinearLayout>
-</LinearLayout>
+</FrameLayout>
