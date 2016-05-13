@@ -19,14 +19,14 @@ import java.util.Set;
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.model.Specials;
-import io.mdx.app.menu.viewholder.MenuItemViewHolder;
+import io.mdx.app.menu.view.ItemHolder;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 /**
  * Created by moltendorf on 16/4/29.
  */
-public class SpecialsFragment extends BaseFragment {
+public class SpecialsFragment extends RecyclerFragment {
   public static final String ACTION_SPECIALS = "io.mdx.app.menu.SPECIALS";
 
   private static FragmentType TYPE = FragmentType.SPECIALS;
@@ -56,7 +56,7 @@ public class SpecialsFragment extends BaseFragment {
   }
 
   private void createAdapter() {
-    MenuItemViewHolder.Factory itemFactory = new MenuItemViewHolder.Factory(R.layout.item_special);
+    ItemHolder.Factory itemFactory = new ItemHolder.Factory(R.layout.row_special_item);
 
     Set<RecyclerViewAdapter.Factory> factories = new LinkedHashSet<>();
     factories.add(itemFactory);

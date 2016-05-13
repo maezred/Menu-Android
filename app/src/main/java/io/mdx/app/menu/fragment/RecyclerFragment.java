@@ -13,11 +13,11 @@ import com.trello.rxlifecycle.components.support.RxFragment;
  * Created by moltendorf on 16/4/29.
  */
 @SuppressLint("ValidFragment")
-public class BaseFragment extends RxFragment {
+public class RecyclerFragment extends RxFragment {
   protected FragmentType type;
   private   int          layout;
 
-  protected BaseFragment(FragmentType type, int layout) {
+  protected RecyclerFragment(FragmentType type, int layout) {
     this.type = type;
     this.layout = layout;
   }

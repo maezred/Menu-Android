@@ -19,8 +19,8 @@ import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.model.Menu;
 import io.mdx.app.menu.model.MenuSection;
-import io.mdx.app.menu.viewholder.MenuItemViewHolder;
-import io.mdx.app.menu.viewholder.MenuSectionViewHolder;
+import io.mdx.app.menu.view.ItemHolder;
+import io.mdx.app.menu.view.SectionHolder;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -28,7 +28,7 @@ import rx.functions.Func1;
 /**
  * Created by moltendorf on 16/4/29.
  */
-public class MenuFragment extends BaseFragment {
+public class MenuFragment extends RecyclerFragment {
   public static final String ACTION_MENU = "io.mdx.app.menu.MENU";
 
   private static FragmentType TYPE = FragmentType.MENU;
@@ -53,8 +53,8 @@ public class MenuFragment extends BaseFragment {
   }
 
   private void createAdapter() {
-    MenuItemViewHolder.Factory    itemFactory    = new MenuItemViewHolder.Factory(R.layout.item_menu);
-    MenuSectionViewHolder.Factory sectionFactory = new MenuSectionViewHolder.Factory(R.layout.item_section);
+    ItemHolder.Factory    itemFactory    = new ItemHolder.Factory(R.layout.row_menu_item);
+    SectionHolder.Factory sectionFactory = new SectionHolder.Factory(R.layout.row_menu_section);
 
     Set<RecyclerViewAdapter.Factory> factories = new LinkedHashSet<>();
     factories.add(itemFactory);

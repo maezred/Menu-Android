@@ -1,4 +1,4 @@
-package io.mdx.app.menu.viewholder;
+package io.mdx.app.menu.view;
 
 import android.content.Context;
 import android.view.ViewGroup;
@@ -19,8 +19,8 @@ import rx.functions.Action1;
 /**
  * Created by moltendorf on 16/5/9.
  */
-public class MenuItemViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> {
-  public MenuItemViewHolder(Context context, ViewGroup viewGroup, int resource) {
+public class ItemHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> {
+  public ItemHolder(Context context, ViewGroup viewGroup, int resource) {
     super(context, viewGroup, resource);
 
     RxView.clicks(itemView.findViewById(R.id.item_favorite))
@@ -59,7 +59,7 @@ public class MenuItemViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem>
     favorite.setChecked(object.getFavorite());
   }
 
-  public static class Factory extends RecyclerViewAdapter.Factory<MenuItemViewHolder> {
+  public static class Factory extends RecyclerViewAdapter.Factory<ItemHolder> {
     private int resource;
 
     public Factory(int resource) {
@@ -67,8 +67,8 @@ public class MenuItemViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem>
     }
 
     @Override
-    public MenuItemViewHolder createViewHolder(Context context, ViewGroup parent) {
-      return new MenuItemViewHolder(context, parent, resource);
+    public ItemHolder createViewHolder(Context context, ViewGroup parent) {
+      return new ItemHolder(context, parent, resource);
     }
   }
 }

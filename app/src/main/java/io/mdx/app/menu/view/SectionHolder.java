@@ -1,4 +1,4 @@
-package io.mdx.app.menu.viewholder;
+package io.mdx.app.menu.view;
 
 import android.content.Context;
 import android.view.ViewGroup;
@@ -11,8 +11,8 @@ import io.mdx.app.menu.model.MenuSection;
 /**
  * Created by moltendorf on 16/5/9.
  */
-public class MenuSectionViewHolder extends RecyclerViewAdapter.ViewHolder<MenuSection> {
-  public MenuSectionViewHolder(Context context, ViewGroup viewGroup, int resource) {
+public class SectionHolder extends RecyclerViewAdapter.ViewHolder<MenuSection> {
+  public SectionHolder(Context context, ViewGroup viewGroup, int resource) {
     super(context, viewGroup, resource);
   }
 
@@ -21,7 +21,7 @@ public class MenuSectionViewHolder extends RecyclerViewAdapter.ViewHolder<MenuSe
     ((TextView) itemView).setText(object.getName());
   }
 
-  public static class Factory extends RecyclerViewAdapter.Factory<MenuSectionViewHolder> {
+  public static class Factory extends RecyclerViewAdapter.Factory<SectionHolder> {
     private int resource;
 
     public Factory(int resource) {
@@ -29,8 +29,8 @@ public class MenuSectionViewHolder extends RecyclerViewAdapter.ViewHolder<MenuSe
     }
 
     @Override
-    public MenuSectionViewHolder createViewHolder(Context context, ViewGroup parent) {
-      return new MenuSectionViewHolder(context, parent, resource);
+    public SectionHolder createViewHolder(Context context, ViewGroup parent) {
+      return new SectionHolder(context, parent, resource);
     }
   }
 }
