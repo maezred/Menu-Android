@@ -1,15 +1,16 @@
 package io.mdx.app.menu.data.favorites;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import io.mdx.app.menu.data.Bus;
 import io.mdx.app.menu.data.Database;
 import io.mdx.app.menu.model.MenuItem;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -27,13 +28,22 @@ public class Favorites {
   public static final String C_DESCRIPTION = "description";
   public static final String C_PICTURE     = "picture";
 
-  public static Runnable createTable(final SQLiteDatabase db) {
-    return new Runnable() {
-      @Override
-      public void run() {
-        db.execSQL(SQL.CREATE_TABLE);
-      }
-    };
+  private static Bus<FavoritesEvent> eventBus = new Bus<>();
+
+  public static Bus<FavoritesEvent> getEventBus() {
+    return eventBus;
+  }
+
+  public static void createTable() {
+    Database
+      .observe(new Runnable() {
+        @Override
+        public void run() {
+          Database.getInstance().getWritableDatabase()
+            .execSQL(SQL.CREATE_TABLE);
+        }
+      })
+      .subscribe();
   }
 
   public static Observable<List<MenuItem>> getFavorites() {
@@ -102,7 +112,12 @@ public class Favorites {
             });
         }
       })
-      .subscribe();
+      .subscribe(new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+          eventBus.send(new FavoritesEvent(FavoritesEvent.Type.ADD, item));
+        }
+      });
   }
 
   public static void removeFavorite(final MenuItem item) {
@@ -115,6 +130,35 @@ public class Favorites {
             .execSQL(SQL.REMOVE_FAVORITE, new String[]{item.getName()});
         }
       })
-      .subscribe();
+      .subscribe(new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+          eventBus.send(new FavoritesEvent(FavoritesEvent.Type.REMOVE, item));
+        }
+      });
+  }
+
+  public static class FavoritesEvent {
+    private Type     type;
+    private MenuItem item;
+
+    public FavoritesEvent(Type type, MenuItem item) {
+      this.type = type;
+      this.item = item;
+    }
+
+    public Type getType() {
+      return type;
+    }
+
+    public MenuItem getItem() {
+      return item;
+    }
+
+    public enum Type {
+      ADD,
+      REMOVE,
+      UPDATE
+    }
   }
 }
