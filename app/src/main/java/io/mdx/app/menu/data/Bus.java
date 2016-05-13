@@ -15,7 +15,7 @@ public class Bus<T> {
     bus.onNext(o);
   }
 
-  public Observable<T> getBus() {
+  public Observable<T> observe() {
     return bus;
   }
 }
