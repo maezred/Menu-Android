@@ -10,6 +10,7 @@ import io.mdx.app.menu.data.Bus;
 import io.mdx.app.menu.data.Database;
 import io.mdx.app.menu.model.MenuItem;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -111,7 +112,12 @@ public class Favorites {
             });
         }
       })
-      .subscribe();
+      .subscribe(new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+          eventBus.send(new FavoritesEvent(FavoritesEvent.Type.ADD, item));
+        }
+      });
   }
 
   public static void removeFavorite(final MenuItem item) {
@@ -124,7 +130,12 @@ public class Favorites {
             .execSQL(SQL.REMOVE_FAVORITE, new String[]{item.getName()});
         }
       })
-      .subscribe();
+      .subscribe(new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+          eventBus.send(new FavoritesEvent(FavoritesEvent.Type.REMOVE, item));
+        }
+      });
   }
 
   public static class FavoritesEvent {
