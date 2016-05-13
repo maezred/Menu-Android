@@ -24,6 +24,20 @@ public class FavoritesFragment extends RecyclerFragment {
 
   public FavoritesFragment() {
     super(R.layout.fragment_favorites_list);
+
+    registerObservers();
+  }
+
+  private void registerObservers() {
+    Favorites.getEventBus().observe()
+      .compose(this.<Favorites.FavoritesEvent>bindUntilEvent(FragmentEvent.DESTROY))
+      .subscribe(new Action1<Favorites.FavoritesEvent>() {
+        @Override
+        public void call(Favorites.FavoritesEvent favoritesEvent) {
+          // @todo Use a scalpel and inject/replace the row directly into the view.
+          fetchData();
+        }
+      });
   }
 
   @Override
