@@ -3,13 +3,11 @@ package io.mdx.app.menu.data;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
 import io.mdx.app.menu.MenuApplication;
 import io.mdx.app.menu.data.favorites.Favorites;
-import io.mdx.app.menu.model.MenuItem;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
@@ -38,22 +36,6 @@ public class Database extends SQLiteOpenHelper {
 
   private Database() {
     super(MenuApplication.getInstance().getApplicationContext(), DB_NAME, null, DB_VERSION);
-  }
-
-  public static Observable<List<MenuItem>> getFavorites() {
-    return observe(Favorites.getFavorites(INSTANCE.getReadableDatabase()));
-  }
-
-  public static Observable<Boolean> isFavorite(String name) {
-    return observe(Favorites.isFavorite(INSTANCE.getReadableDatabase(), name));
-  }
-
-  public static void addFavorite(MenuItem item) {
-    observe(Favorites.addFavorite(INSTANCE.getWritableDatabase(), item)).subscribe();
-  }
-
-  public static void removeFavorite(MenuItem item) {
-    observe(Favorites.removeFavorite(INSTANCE.getWritableDatabase(), item)).subscribe();
   }
 
   @Override

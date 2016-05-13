@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
 import io.mdx.app.menu.R;
-import io.mdx.app.menu.data.Database;
+import io.mdx.app.menu.data.favorites.Favorites;
 import io.mdx.app.menu.model.MenuItem;
 import rx.functions.Action1;
 
@@ -30,9 +30,9 @@ public class ItemHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> {
           boolean favorite = object.getFavorite();
 
           if (favorite) {
-            Database.removeFavorite(object);
+            Favorites.removeFavorite(object);
           } else {
-            Database.addFavorite(object);
+            Favorites.addFavorite(object);
           }
 
           object.setFavorite(!favorite);
