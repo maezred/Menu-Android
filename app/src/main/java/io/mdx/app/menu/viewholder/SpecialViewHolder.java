@@ -23,7 +23,7 @@ public class SpecialViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> 
   public SpecialViewHolder(Context context, ViewGroup viewGroup) {
     super(context, viewGroup, R.layout.item_special);
 
-    RxView.clicks(itemView.findViewById(R.id.item_special_favorite))
+    RxView.clicks(itemView.findViewById(R.id.item_favorite))
       .subscribe(new Action1<Void>() {
         @Override
         public void call(Void aVoid) {
@@ -42,11 +42,11 @@ public class SpecialViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> 
 
   @Override
   public void bindTo() {
-    TextView  name        = (TextView) itemView.findViewById(R.id.item_special_name);
-    TextView  price       = (TextView) itemView.findViewById(R.id.item_special_price);
-    TextView  description = (TextView) itemView.findViewById(R.id.item_special_description);
-    ImageView picture     = (ImageView) itemView.findViewById(R.id.item_special_picture);
-    CheckBox  favorite    = (CheckBox) itemView.findViewById(R.id.item_special_favorite);
+    TextView  name        = (TextView) itemView.findViewById(R.id.item_name);
+    TextView  price       = (TextView) itemView.findViewById(R.id.item_price);
+    TextView  description = (TextView) itemView.findViewById(R.id.item_description);
+    ImageView picture     = (ImageView) itemView.findViewById(R.id.item_picture);
+    CheckBox  favorite    = (CheckBox) itemView.findViewById(R.id.item_favorite);
 
     name.setText(object.getName());
     price.setText(object.getPrice());

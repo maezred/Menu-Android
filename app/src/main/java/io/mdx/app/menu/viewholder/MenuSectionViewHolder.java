@@ -14,7 +14,7 @@ import io.mdx.app.menu.model.MenuSection;
  */
 public class MenuSectionViewHolder extends RecyclerViewAdapter.ViewHolder<MenuSection> {
   public MenuSectionViewHolder(Context context, ViewGroup viewGroup) {
-    super(context, viewGroup, R.layout.item_menu_section);
+    super(context, viewGroup, R.layout.item_section);
   }
 
   @Override
