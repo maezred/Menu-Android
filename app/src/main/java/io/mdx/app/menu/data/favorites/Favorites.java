@@ -1,7 +1,6 @@
 package io.mdx.app.menu.data.favorites;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +33,16 @@ public class Favorites {
     return eventBus;
   }
 
-  public static Runnable createTable(final SQLiteDatabase db) {
-    return new Runnable() {
-      @Override
-      public void run() {
-        db.execSQL(SQL.CREATE_TABLE);
-      }
-    };
+  public static void createTable() {
+    Database
+      .observe(new Runnable() {
+        @Override
+        public void run() {
+          Database.getInstance().getWritableDatabase()
+            .execSQL(SQL.CREATE_TABLE);
+        }
+      })
+      .subscribe();
   }
 
   public static Observable<List<MenuItem>> getFavorites() {
