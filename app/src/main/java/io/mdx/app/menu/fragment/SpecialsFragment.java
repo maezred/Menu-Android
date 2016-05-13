@@ -12,12 +12,14 @@ import com.trello.rxlifecycle.FragmentEvent;
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.model.Specials;
-import io.mdx.app.menu.viewholder.SpecialViewHolder;
+import io.mdx.app.menu.viewholder.MenuItemViewHolder;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -54,8 +56,13 @@ public class SpecialsFragment extends BaseFragment {
   }
 
   private void createAdapter() {
+    MenuItemViewHolder.Factory itemFactory = new MenuItemViewHolder.Factory(R.layout.item_special);
+
+    Set<RecyclerViewAdapter.Factory> factories = new LinkedHashSet<>();
+    factories.add(itemFactory);
+
     specialsAdapter = new RecyclerViewAdapter(getContext());
-    specialsAdapter.setViewHolders(SpecialViewHolder.class);
+    specialsAdapter.setViewHolders(factories);
     specialsAdapter.changeDataSet(data);
   }
 

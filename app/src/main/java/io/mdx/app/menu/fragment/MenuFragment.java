@@ -11,7 +11,9 @@ import com.trello.rxlifecycle.FragmentEvent;
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.Backend;
@@ -51,8 +53,15 @@ public class MenuFragment extends BaseFragment {
   }
 
   private void createAdapter() {
+    MenuItemViewHolder.Factory    itemFactory    = new MenuItemViewHolder.Factory(R.layout.item_menu);
+    MenuSectionViewHolder.Factory sectionFactory = new MenuSectionViewHolder.Factory(R.layout.item_section);
+
+    Set<RecyclerViewAdapter.Factory> factories = new LinkedHashSet<>();
+    factories.add(itemFactory);
+    factories.add(sectionFactory);
+
     menuAdapter = new RecyclerViewAdapter(getContext());
-    menuAdapter.setViewHolders(MenuSectionViewHolder.class, MenuItemViewHolder.class);
+    menuAdapter.setViewHolders(factories);
     menuAdapter.changeDataSet(data);
   }
 

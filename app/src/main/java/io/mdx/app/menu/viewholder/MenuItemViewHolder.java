@@ -20,8 +20,8 @@ import rx.functions.Action1;
  * Created by moltendorf on 16/5/9.
  */
 public class MenuItemViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem> {
-  public MenuItemViewHolder(Context context, ViewGroup viewGroup) {
-    super(context, viewGroup, R.layout.item_menu);
+  public MenuItemViewHolder(Context context, ViewGroup viewGroup, int resource) {
+    super(context, viewGroup, resource);
 
     RxView.clicks(itemView.findViewById(R.id.item_favorite))
       .subscribe(new Action1<Void>() {
@@ -60,9 +60,15 @@ public class MenuItemViewHolder extends RecyclerViewAdapter.ViewHolder<MenuItem>
   }
 
   public static class Factory extends RecyclerViewAdapter.Factory<MenuItemViewHolder> {
+    private int resource;
+
+    public Factory(int resource) {
+      this.resource = resource;
+    }
+
     @Override
     public MenuItemViewHolder createViewHolder(Context context, ViewGroup parent) {
-      return new MenuItemViewHolder(context, parent);
+      return new MenuItemViewHolder(context, parent, resource);
     }
   }
 }
