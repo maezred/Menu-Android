@@ -11,6 +11,7 @@ import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.favorites.Favorites;
 import io.mdx.app.menu.model.MenuItem;
 import io.mdx.app.menu.view.ItemHolder;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -24,20 +25,6 @@ public class FavoritesFragment extends RecyclerFragment {
 
   public FavoritesFragment() {
     super(R.layout.fragment_favorites_list);
-
-    registerObservers();
-  }
-
-  private void registerObservers() {
-    Favorites.getEventBus().observe()
-      .compose(this.<Favorites.FavoritesEvent>bindUntilEvent(FragmentEvent.DESTROY))
-      .subscribe(new Action1<Favorites.FavoritesEvent>() {
-        @Override
-        public void call(Favorites.FavoritesEvent favoritesEvent) {
-          // @todo Use a scalpel and inject/replace the row directly into the view.
-          fetchData();
-        }
-      });
   }
 
   @Override
@@ -46,8 +33,8 @@ public class FavoritesFragment extends RecyclerFragment {
   }
 
   @Override
-  public void fetchData() {
-    Favorites.getFavorites()
+  public Subscription fetchData() {
+    return Favorites.getFavorites()
       .compose(this.<List<MenuItem>>bindUntilEvent(FragmentEvent.DESTROY))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(new Action1<List<MenuItem>>() {
@@ -56,6 +43,19 @@ public class FavoritesFragment extends RecyclerFragment {
           changeDataSet(data);
         }
       });
+  }
+
+  @Override
+  public void setUserVisibleHint(boolean isVisibleToUser) {
+    super.setUserVisibleHint(isVisibleToUser);
+
+    if (!isVisibleToUser) {
+      if (subscription != null && !subscription.isUnsubscribed()) {
+        subscription.unsubscribe();
+      }
+
+      fetchData();
+    }
   }
 
   public static class Factory implements FragmentFactory<FavoritesFragment> {

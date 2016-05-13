@@ -14,6 +14,7 @@ import io.mdx.app.menu.model.Menu;
 import io.mdx.app.menu.model.MenuSection;
 import io.mdx.app.menu.view.ItemHolder;
 import io.mdx.app.menu.view.SectionHolder;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -37,8 +38,8 @@ public class MenuFragment extends RecyclerFragment {
   }
 
   @Override
-  public void fetchData() {
-    Backend.getMenu()
+  public Subscription fetchData() {
+    return Backend.getMenu()
       .compose(this.<Menu>bindUntilEvent(FragmentEvent.DESTROY))
       .map(new Func1<Menu, List>() {
         @Override
