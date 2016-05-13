@@ -13,6 +13,7 @@ import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.model.Specials;
 import io.mdx.app.menu.view.ItemHolder;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -34,8 +35,8 @@ public class SpecialsFragment extends RecyclerFragment {
   }
 
   @Override
-  public void fetchData() {
-    Backend.getSpecials()
+  public Subscription fetchData() {
+    return Backend.getSpecials()
       .compose(this.<Specials>bindUntilEvent(FragmentEvent.DESTROY))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(new Action1<Specials>() {

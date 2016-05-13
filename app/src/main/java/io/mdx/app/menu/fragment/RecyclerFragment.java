@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.trello.rxlifecycle.FragmentEvent;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
@@ -18,6 +19,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.mdx.app.menu.data.favorites.Favorites;
+import rx.Subscription;
+import rx.functions.Action1;
+
 /**
  * Created by moltendorf on 16/4/29.
  */
@@ -26,13 +31,32 @@ abstract public class RecyclerFragment extends RxFragment {
   protected RecyclerViewAdapter adapter;
   protected List data = new ArrayList();
   protected RecyclerView list;
+  private   Subscription subscription;
 
   private int layout;
 
   protected RecyclerFragment(int layout) {
     this.layout = layout;
 
-    fetchData();
+    registerObservers();
+
+    subscription = fetchData();
+  }
+
+  private void registerObservers() {
+    Favorites.getEventBus().observe()
+      .compose(this.<Favorites.FavoritesEvent>bindUntilEvent(FragmentEvent.DESTROY))
+      .subscribe(new Action1<Favorites.FavoritesEvent>() {
+        @Override
+        public void call(Favorites.FavoritesEvent favoritesEvent) {
+          // @todo Use a scalpel and inject/replace the row directly into the view.
+          if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+          }
+
+          fetchData();
+        }
+      });
   }
 
   @Nullable
@@ -72,7 +96,7 @@ abstract public class RecyclerFragment extends RxFragment {
     list.setAdapter(adapter);
   }
 
-  abstract public void fetchData();
+  abstract public Subscription fetchData();
 
   abstract public void populateFactories(Set<RecyclerViewAdapter.Factory> factories);
 }
