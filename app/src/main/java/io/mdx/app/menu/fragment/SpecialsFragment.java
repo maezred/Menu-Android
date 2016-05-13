@@ -1,9 +1,5 @@
 package io.mdx.app.menu.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -11,9 +7,6 @@ import com.trello.rxlifecycle.FragmentEvent;
 
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import io.mdx.app.menu.R;
@@ -31,61 +24,31 @@ public class SpecialsFragment extends RecyclerFragment {
 
   private static FragmentType TYPE = FragmentType.SPECIALS;
 
-  List data = new ArrayList();
-
-  private RecyclerViewAdapter specialsAdapter;
-  private RecyclerView        list;
-
   public SpecialsFragment() {
-    super(TYPE, R.layout.fragment_specials_list);
+    super(R.layout.fragment_specials_list);
   }
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    fetchSpecials();
+  public void populateFactories(Set<RecyclerViewAdapter.Factory> factories) {
+    factories.add(new ItemHolder.Factory(R.layout.row_special_item));
   }
 
   @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-
-    createAdapter();
-    setupList();
-  }
-
-  private void createAdapter() {
-    ItemHolder.Factory itemFactory = new ItemHolder.Factory(R.layout.row_special_item);
-
-    Set<RecyclerViewAdapter.Factory> factories = new LinkedHashSet<>();
-    factories.add(itemFactory);
-
-    specialsAdapter = new RecyclerViewAdapter(getContext());
-    specialsAdapter.setViewHolders(factories);
-    specialsAdapter.changeDataSet(data);
-  }
-
-  private void fetchSpecials() {
+  public void fetchData() {
     Backend.getSpecials()
       .compose(this.<Specials>bindUntilEvent(FragmentEvent.DESTROY))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(new Action1<Specials>() {
         @Override
         public void call(Specials specials) {
-          data = specials.getItems();
-
-          if (specialsAdapter != null) {
-            specialsAdapter.changeDataSet(data);
-          }
+          changeDataSet(specials.getItems());
         }
       });
   }
 
-  private void setupList() {
-    list = (RecyclerView) getView();
-    list.setLayoutManager(new LinearLayoutManager(getContext()));
-    list.setAdapter(specialsAdapter);
+  @Override
+  public void setupList() {
+    super.setupList();
 
     list.setOnTouchListener(new View.OnTouchListener() {
       private int position = 0;

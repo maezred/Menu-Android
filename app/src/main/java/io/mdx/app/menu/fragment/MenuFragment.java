@@ -1,17 +1,10 @@
 package io.mdx.app.menu.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-
 import com.trello.rxlifecycle.FragmentEvent;
 
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,39 +26,18 @@ public class MenuFragment extends RecyclerFragment {
 
   private static FragmentType TYPE = FragmentType.MENU;
 
-  private List data = new ArrayList();
-
-  private RecyclerViewAdapter menuAdapter;
-  private RecyclerView        list;
-
   public MenuFragment() {
-    super(TYPE, R.layout.fragment_menu);
-
-    fetchMenu();
+    super(R.layout.fragment_menu);
   }
 
   @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-
-    createAdapter();
-    setupList();
+  public void populateFactories(Set<RecyclerViewAdapter.Factory> factories) {
+    factories.add(new ItemHolder.Factory(R.layout.row_menu_item));
+    factories.add(new SectionHolder.Factory(R.layout.row_menu_section));
   }
 
-  private void createAdapter() {
-    ItemHolder.Factory    itemFactory    = new ItemHolder.Factory(R.layout.row_menu_item);
-    SectionHolder.Factory sectionFactory = new SectionHolder.Factory(R.layout.row_menu_section);
-
-    Set<RecyclerViewAdapter.Factory> factories = new LinkedHashSet<>();
-    factories.add(itemFactory);
-    factories.add(sectionFactory);
-
-    menuAdapter = new RecyclerViewAdapter(getContext());
-    menuAdapter.setViewHolders(factories);
-    menuAdapter.changeDataSet(data);
-  }
-
-  private void fetchMenu() {
+  @Override
+  public void fetchData() {
     Backend.getMenu()
       .compose(this.<Menu>bindUntilEvent(FragmentEvent.DESTROY))
       .map(new Func1<Menu, List>() {
@@ -85,19 +57,9 @@ public class MenuFragment extends RecyclerFragment {
       .subscribe(new Action1<List>() {
         @Override
         public void call(List list) {
-          data = list;
-
-          if (menuAdapter != null) {
-            menuAdapter.changeDataSet(data);
-          }
+          changeDataSet(list);
         }
       });
-  }
-
-  private void setupList() {
-    list = (RecyclerView) getView();
-    list.setLayoutManager(new LinearLayoutManager(getContext()));
-    list.setAdapter(menuAdapter);
   }
 
   public static class Factory implements FragmentFactory<MenuFragment> {
