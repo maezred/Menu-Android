@@ -4,6 +4,6 @@
   <color name="colorPrimaryDark">#303F9F</color>
   <color name="colorAccent">#FF4081</color>
   <color name="colorRowText">#DDFFFFFF</color>
-  <color name="colorRowTextBackground">#88000000</color>
+  <color name="colorRowTextBackground">#44000000</color>
   <color name="colorRowBackground">#888888</color>
 </resources>
