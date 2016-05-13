@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mdx.app.menu.data.favorites.Favorites;
 import io.mdx.app.menu.model.Menu;
 import io.mdx.app.menu.model.MenuItem;
 import io.mdx.app.menu.model.MenuSection;
@@ -53,7 +54,7 @@ abstract public class Backend {
     return service.getSpecials()
       .subscribeOn(Schedulers.io())
       .observeOn(Schedulers.computation())
-      .zipWith(Database.getFavorites(), new Func2<Specials, List<MenuItem>, Specials>() {
+      .zipWith(Favorites.getFavorites(), new Func2<Specials, List<MenuItem>, Specials>() {
         @Override
         public Specials call(Specials specials, List<MenuItem> favorites) {
           Map<String, MenuItem> favoriteLookup = new HashMap<>();
@@ -77,7 +78,7 @@ abstract public class Backend {
     return service.getMenu()
       .subscribeOn(Schedulers.io())
       .observeOn(Schedulers.computation())
-      .zipWith(Database.getFavorites(), new Func2<Menu, List<MenuItem>, Menu>() {
+      .zipWith(Favorites.getFavorites(), new Func2<Menu, List<MenuItem>, Menu>() {
         @Override
         public Menu call(Menu menu, List<MenuItem> favorites) {
           Map<String, MenuItem> favoriteLookup = new HashMap<>();
