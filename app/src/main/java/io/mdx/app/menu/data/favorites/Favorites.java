@@ -93,7 +93,7 @@ public class Favorites {
         @Override
         public void run() {
           Timber.d("Added favorite to database: %s.", item.getName());
-          Database.getInstance().getReadableDatabase()
+          Database.getInstance().getWritableDatabase()
             .execSQL(SQL.ADD_FAVORITE, new String[]{
               item.getName(),
               item.getPrice(),
@@ -111,7 +111,7 @@ public class Favorites {
         @Override
         public void run() {
           Timber.d("Removed favorite from database: %s.", item.getName());
-          Database.getInstance().getReadableDatabase()
+          Database.getInstance().getWritableDatabase()
             .execSQL(SQL.REMOVE_FAVORITE, new String[]{item.getName()});
         }
       })
