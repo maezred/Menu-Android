@@ -14,16 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mdx.app.menu.R;
+import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.model.Menu;
 import io.mdx.app.menu.model.MenuSection;
-import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.viewholder.MenuItemViewHolder;
 import io.mdx.app.menu.viewholder.MenuSectionViewHolder;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
  * Created by moltendorf on 16/4/29.
@@ -61,8 +59,6 @@ public class MenuFragment extends BaseFragment {
   private void fetchMenu() {
     Backend.getMenu()
       .compose(this.<Menu>bindUntilEvent(FragmentEvent.DESTROY))
-      .subscribeOn(Schedulers.newThread())
-      .observeOn(AndroidSchedulers.mainThread())
       .map(new Func1<Menu, List>() {
         @Override
         public List call(Menu menu) {
@@ -76,19 +72,10 @@ public class MenuFragment extends BaseFragment {
           return list;
         }
       })
-      .subscribe(new Subscriber<List>() {
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(new Action1<List>() {
         @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-          Timber.e(e.getMessage());
-        }
-
-        @Override
-        public void onNext(List list) {
+        public void call(List list) {
           data = list;
 
           if (menuAdapter != null) {
