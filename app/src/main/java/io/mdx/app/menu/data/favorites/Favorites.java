@@ -138,6 +138,30 @@ public class Favorites {
       });
   }
 
+  public static void updateFavorite(final MenuItem item) {
+    Database
+      .observe(new Runnable() {
+        @Override
+        public void run() {
+          Timber.d("Updated favorite in database: %s.", item.getName());
+          Database.getInstance().getWritableDatabase()
+            .execSQL(SQL.UPDATE_FAVORITE, new String[]{
+              item.getPrice(),
+              item.getDescription(),
+              item.getPicture(),
+
+              item.getName() // WHERE clause
+            });
+        }
+      })
+      .subscribe(new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+          eventBus.send(new FavoritesEvent(FavoritesEvent.Type.UPDATE, item));
+        }
+      });
+  }
+
   public static class FavoritesEvent {
     private Type     type;
     private MenuItem item;

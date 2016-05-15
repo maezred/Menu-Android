@@ -50,22 +50,40 @@ abstract public class Backend {
     return service;
   }
 
+  // @todo This is basically the same method as getMenu. Compact?
+
+  /**
+   * Creates an observable that, when subscribed to, fetches both the current specials and the user's favorites, then uses both
+   * data sets to create a list of specials with each special that's in the user's favorites list properly flagged as a
+   * favorite.
+   *
+   * @return Observable to fetch Specials
+   */
   public static Observable<Specials> getSpecials() {
     return service.getSpecials()
-      .subscribeOn(Schedulers.io())
-      .observeOn(Schedulers.computation())
+      .subscribeOn(Schedulers.io()) // Use IO threads for network request.
+      .observeOn(Schedulers.computation()) // Use computation threads for processing data.
       .zipWith(Favorites.getFavorites(), new Func2<Specials, List<MenuItem>, Specials>() {
         @Override
         public Specials call(Specials specials, List<MenuItem> favorites) {
           Map<String, MenuItem> favoriteLookup = new HashMap<>();
 
+          // Index the favorites in a map for quick lookup.
           for (MenuItem favorite : favorites) {
             favoriteLookup.put(favorite.getName(), favorite);
           }
 
+          // Iterate through all specials and check if they're in the favorites map.
           for (MenuItem special : specials.getItems()) {
-            if (favoriteLookup.containsKey(special.getName())) {
-              special.setFavorite(true);
+            MenuItem favorite = favoriteLookup.get(special.getName());
+
+            if (favorite != null) {
+              special.setFavorite(true); // Mark this special as favorite.
+
+              // Check if the favorite's extra data matches.
+              if (!favorite.equals(special)) {
+                Favorites.updateFavorite(special); // Update the favorite's extra data.
+              }
             }
           }
 
@@ -74,23 +92,40 @@ abstract public class Backend {
       });
   }
 
+  // @todo This is basically the same method as getSpecials. Compact?
+
+  /**
+   * Creates an observable that, when subscribed to, fetches both the current menu and the user's favorites, then uses both data
+   * sets to create the menu with each item that's in the user's favorites list properly flagged as a favorite.
+   *
+   * @return Observable to fetch menu
+   */
   public static Observable<Menu> getMenu() {
     return service.getMenu()
-      .subscribeOn(Schedulers.io())
-      .observeOn(Schedulers.computation())
+      .subscribeOn(Schedulers.io()) // Use IO threads for network request.
+      .observeOn(Schedulers.computation()) // Use computation threads for processing data.
       .zipWith(Favorites.getFavorites(), new Func2<Menu, List<MenuItem>, Menu>() {
         @Override
         public Menu call(Menu menu, List<MenuItem> favorites) {
           Map<String, MenuItem> favoriteLookup = new HashMap<>();
 
+          // Index the favorites in a map for quick lookup.
           for (MenuItem favorite : favorites) {
             favoriteLookup.put(favorite.getName(), favorite);
           }
 
+          // Iterate through all items and check if they're in the favorites map.
           for (MenuSection section : menu.getSections()) {
             for (MenuItem item : section.getItems()) {
-              if (favoriteLookup.containsKey(item.getName())) {
-                item.setFavorite(true);
+              MenuItem favorite = favoriteLookup.get(item.getName());
+
+              if (favorite != null) {
+                item.setFavorite(true); // Mark this special as favorite.
+
+                // Check if the favorite's extra data matches.
+                if (!favorite.equals(item)) {
+                  Favorites.updateFavorite(item); // Update the favorite's extra data.
+                }
               }
             }
           }
