@@ -52,4 +52,24 @@ public class MenuItem {
   public void setFavorite(boolean favorite) {
     this.favorite = favorite;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    MenuItem menuItem = (MenuItem) o;
+
+    return _name.equals(menuItem._name);
+  }
+
+  @Override
+  public int hashCode() {
+    return _name.hashCode();
+  }
 }
