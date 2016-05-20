@@ -25,6 +25,10 @@ public class MenuItem {
     favorite = true;
   }
 
+  public int getId() {
+    return hashCode(); // Simple hack for now.
+  }
+
   public String getName() {
     return _name;
   }
