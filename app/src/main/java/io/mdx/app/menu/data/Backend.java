@@ -46,10 +46,6 @@ abstract public class Backend {
     service = retrofit.create(Service.class);
   }
 
-  public static Service getService() {
-    return service;
-  }
-
   // @todo This is basically the same method as getMenu. Compact?
 
   /**
