@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 // @todo Could probably use a single TreeMap for backing.
+// @todo Some methods probably broken. Needs testing.
 
 /**
  * Created by moltendorf on 16/5/21.
@@ -29,6 +30,16 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
   public CanonicalSet(int capacity) {
     list = new ArrayList<>(capacity);
     map = new HashMap<>(capacity);
+  }
+
+  public T get(Object object) {
+    Node<T> node = map.get(object);
+
+    if (node != null) {
+      return node.value;
+    }
+
+    return null;
   }
 
   @Override
