@@ -42,6 +42,18 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
     return null;
   }
 
+  public boolean update(T object) {
+    Node<T> node = map.get(object);
+
+    if (node != null) {
+      node.value = object;
+
+      return true;
+    }
+
+    return false;
+  }
+
   @Override
   public void add(int index, T object) {
     if (!map.containsKey(object)) {
