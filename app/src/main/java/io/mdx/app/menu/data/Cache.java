@@ -1,61 +1,95 @@
 package io.mdx.app.menu.data;
 
-import io.mdx.app.menu.data.favorites.Favorites;
+import java.util.List;
+import java.util.ListIterator;
+
 import io.mdx.app.menu.model.MenuItem;
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by moltendorf on 16/5/21.
  */
 public class Cache {
-  private static CanonicalSet<MenuItem> items = new CanonicalSet<>();
+  private static final CanonicalSet<MenuItem> items = new CanonicalSet<>();
 
-  public static MenuItem getItem(Object item) {
-    return items.get(item);
+  private static Bus<MenuItem> updatedItemBus = new Bus<>();
+
+  public static Observable<MenuItem> getItem(final Object item) {
+    return Observable
+      .create(new Observable.OnSubscribe<MenuItem>() {
+        @Override
+        public void call(Subscriber<? super MenuItem> subscriber) {
+          MenuItem existing;
+
+          synchronized (items) {
+            existing = items.get(item);
+          }
+
+          subscriber.onNext(existing);
+        }
+      })
+      .subscribeOn(Schedulers.io())
+      .observeOn(Schedulers.immediate());
   }
 
   public static MenuItem addOrUpdateItem(MenuItem item) {
-    if (!items.add(item)) {
-      MenuItem existing = items.get(item);
+    MenuItem existing = null;
 
-      boolean update = false;
+    synchronized (items) {
+      if (items.add(item)) {
+        return item;
+      } else {
+        existing = items.get(item);
+      }
+    }
 
-      if (!existing.getName().equals(item.getName())) {
-        existing.setName(item.getName());
+    if (existing != null) {
+      check:
+      {
+        if (!existing.getName().equals(item.getName())) {
+          break check;
+        }
 
-        update = true;
+        if (!existing.getPrice().equals(item.getPrice())) {
+          break check;
+        }
+
+        if (!existing.getDescription().equals(item.getDescription())) {
+          break check;
+        }
+
+        if (!existing.getPicture().equals(item.getPicture())) {
+          break check;
+        }
+
+        if (!existing.getDisplay().equals(item.getDisplay())) {
+          break check;
+        }
+
+        return existing;
       }
 
-      if (!existing.getPrice().equals(item.getPrice())) {
-        existing.setPrice(item.getPrice());
-
-        update = true;
+      synchronized (items) {
+        items.update(item);
       }
 
-      if (!existing.getDescription().equals(item.getDescription())) {
-        existing.setDescription(item.getDescription());
-
-        update = true;
-      }
-
-      if (!existing.getPicture().equals(item.getPicture())) {
-        existing.setPicture(item.getPicture());
-
-        update = true;
-      }
-
-      if (!existing.getDisplay().equals(item.getDisplay())) {
-        existing.setDisplay(item.getDisplay());
-
-        update = true;
-      }
-
-      if (update && existing.getFavorite()) {
-        Favorites.updateFavorite(existing);
-      }
-
-      return existing;
+      updatedItemBus.send(item);
     }
 
     return item;
+  }
+
+  public static void addOrUpdateItems(List<MenuItem> items) {
+    ListIterator<MenuItem> iterator = items.listIterator();
+
+    while (iterator.hasNext()) {
+      iterator.set(addOrUpdateItem(iterator.next()));
+    }
+  }
+
+  public static Bus<MenuItem> getUpdatedItemBus() {
+    return updatedItemBus;
   }
 }
