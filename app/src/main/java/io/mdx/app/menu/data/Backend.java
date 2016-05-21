@@ -33,6 +33,9 @@ abstract public class Backend {
 
   private static Service service;
 
+  private static Specials specialsCache;
+  private static Menu     menuCache;
+
   static {
     Retrofit retrofit = new Retrofit.Builder()
       .baseUrl("https://mexxis.mdx.co/data/")
@@ -51,6 +54,12 @@ abstract public class Backend {
    * @return Observable to fetch Specials
    */
   public static Observable<Specials> getSpecials() {
+    synchronized (Backend.class) {
+      if (specialsCache != null) {
+        return Observable.just(specialsCache);
+      }
+    }
+
     return service.getSpecials()
       .subscribeOn(Schedulers.io()) // Use IO threads for network request.
       .observeOn(Schedulers.computation()) // Use computation threads for processing data.
@@ -58,6 +67,10 @@ abstract public class Backend {
         @Override
         public Specials call(Specials specials, CanonicalSet<MenuItem> favorites) {
           Cache.addOrUpdateItems(specials.getItems());
+
+          synchronized (Backend.class) {
+            specialsCache = specials;
+          }
 
           return specials;
         }
@@ -71,6 +84,12 @@ abstract public class Backend {
    * @return Observable to fetch menu
    */
   public static Observable<Menu> getMenu() {
+    synchronized (Backend.class) {
+      if (menuCache != null) {
+        return Observable.just(menuCache);
+      }
+    }
+
     return service.getMenu()
       .subscribeOn(Schedulers.io()) // Use IO threads for network request.
       .observeOn(Schedulers.computation()) // Use computation threads for processing data.
@@ -80,6 +99,10 @@ abstract public class Backend {
           // Iterate through all sections.
           for (MenuSection section : menu.getSections()) {
             Cache.addOrUpdateItems(section.getItems());
+          }
+
+          synchronized (Backend.class) {
+            menuCache = menu;
           }
 
           return menu;
