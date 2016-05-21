@@ -2,11 +2,10 @@ package io.mdx.app.menu.data.favorites;
 
 import android.database.Cursor;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import io.mdx.app.menu.data.Bus;
+import io.mdx.app.menu.data.CanonicalSet;
 import io.mdx.app.menu.data.Database;
 import io.mdx.app.menu.model.MenuItem;
 import rx.Observable;
@@ -28,7 +27,7 @@ public class Favorites {
   public static final String C_DESCRIPTION = "description";
   public static final String C_PICTURE     = "picture";
 
-  private static Set<MenuItem> cache;
+  private static CanonicalSet<MenuItem> cache;
 
   private static Bus<FavoritesEvent> eventBus = new Bus<>();
 
@@ -48,7 +47,7 @@ public class Favorites {
       .subscribe();
   }
 
-  public static Observable<Set<MenuItem>> getFavorites() {
+  public static Observable<CanonicalSet<MenuItem>> getFavorites() {
     synchronized (Favorites.class) {
       if (cache != null) {
         return Observable.just(cache);
@@ -64,10 +63,10 @@ public class Favorites {
         }
       })
       .observeOn(Schedulers.computation())
-      .map(new Func1<Cursor, Set<MenuItem>>() {
+      .map(new Func1<Cursor, CanonicalSet<MenuItem>>() {
         @Override
-        public Set<MenuItem> call(Cursor cursor) {
-          Set<MenuItem> items = new LinkedHashSet<>(cursor.getCount());
+        public CanonicalSet<MenuItem> call(Cursor cursor) {
+          CanonicalSet<MenuItem> items = new CanonicalSet<>(cursor.getCount());
           cursor.moveToFirst();
 
           while (!cursor.isAfterLast()) {
