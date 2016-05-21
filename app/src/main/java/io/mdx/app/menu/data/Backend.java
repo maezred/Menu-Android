@@ -5,9 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 import io.mdx.app.menu.data.favorites.Favorites;
 import io.mdx.app.menu.model.Menu;
@@ -59,19 +56,12 @@ abstract public class Backend {
     return service.getSpecials()
       .subscribeOn(Schedulers.io()) // Use IO threads for network request.
       .observeOn(Schedulers.computation()) // Use computation threads for processing data.
-      .zipWith(Favorites.getFavorites(), new Func2<Specials, Set<MenuItem>, Specials>() {
+      .zipWith(Favorites.getFavorites(), new Func2<Specials, CanonicalSet<MenuItem>, Specials>() {
         @Override
-        public Specials call(Specials specials, Set<MenuItem> favorites) {
-          Map<String, MenuItem> favoriteLookup = new HashMap<>();
-
-          // Index the favorites in a map for quick lookup.
-          for (MenuItem favorite : favorites) {
-            favoriteLookup.put(favorite.getName(), favorite);
-          }
-
+        public Specials call(Specials specials, CanonicalSet<MenuItem> favorites) {
           // Iterate through all specials and check if they're in the favorites map.
           for (MenuItem special : specials.getItems()) {
-            MenuItem favorite = favoriteLookup.get(special.getName());
+            MenuItem favorite = favorites.get(special);
 
             if (favorite != null) {
               special.setFavorite(true); // Mark this special as favorite.
@@ -100,20 +90,13 @@ abstract public class Backend {
     return service.getMenu()
       .subscribeOn(Schedulers.io()) // Use IO threads for network request.
       .observeOn(Schedulers.computation()) // Use computation threads for processing data.
-      .zipWith(Favorites.getFavorites(), new Func2<Menu, Set<MenuItem>, Menu>() {
+      .zipWith(Favorites.getFavorites(), new Func2<Menu, CanonicalSet<MenuItem>, Menu>() {
         @Override
-        public Menu call(Menu menu, Set<MenuItem> favorites) {
-          Map<String, MenuItem> favoriteLookup = new HashMap<>();
-
-          // Index the favorites in a map for quick lookup.
-          for (MenuItem favorite : favorites) {
-            favoriteLookup.put(favorite.getName(), favorite);
-          }
-
+        public Menu call(Menu menu, CanonicalSet<MenuItem> favorites) {
           // Iterate through all items and check if they're in the favorites map.
           for (MenuSection section : menu.getSections()) {
             for (MenuItem item : section.getItems()) {
-              MenuItem favorite = favoriteLookup.get(item.getName());
+              MenuItem favorite = favorites.get(item);
 
               if (favorite != null) {
                 item.setFavorite(true); // Mark this special as favorite.
