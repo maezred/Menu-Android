@@ -63,13 +63,21 @@ public class MenuItem {
       return true;
     }
 
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null) {
       return false;
     }
 
-    MenuItem menuItem = (MenuItem) o;
+    Class<?> type = o.getClass();
 
-    return _name.equals(menuItem._name);
+    if (getClass() == type) {
+      MenuItem menuItem = (MenuItem) o;
+
+      return _name.equals(menuItem._name);
+    } else if (Integer.class == type) {
+      return getId() == o;
+    }
+
+    return false;
   }
 
   @Override

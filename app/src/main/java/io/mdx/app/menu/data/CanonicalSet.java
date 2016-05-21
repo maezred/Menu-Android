@@ -362,7 +362,7 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
 
     @Override
     public boolean equals(Object o) {
-      return value == o || !(o == null || value.getClass() != o.getClass()) && value.equals(o);
+      return value.equals(o);
     }
 
     @Override
