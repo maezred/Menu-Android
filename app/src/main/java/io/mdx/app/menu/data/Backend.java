@@ -43,8 +43,6 @@ abstract public class Backend {
     service = retrofit.create(Service.class);
   }
 
-  // @todo This is basically the same method as getMenu. Compact?
-
   /**
    * Creates an observable that, when subscribed to, fetches both the current specials and the user's favorites, then uses both
    * data sets to create a list of specials with each special that's in the user's favorites list properly flagged as a
@@ -59,26 +57,12 @@ abstract public class Backend {
       .zipWith(Favorites.getFavorites(), new Func2<Specials, CanonicalSet<MenuItem>, Specials>() {
         @Override
         public Specials call(Specials specials, CanonicalSet<MenuItem> favorites) {
-          // Iterate through all specials and check if they're in the favorites map.
-          for (MenuItem special : specials.getItems()) {
-            MenuItem favorite = favorites.get(special);
-
-            if (favorite != null) {
-              special.setFavorite(true); // Mark this special as favorite.
-
-              // Check if the favorite's extra data matches.
-              if (!favorite.equals(special)) {
-                Favorites.updateFavorite(special); // Update the favorite's extra data.
-              }
-            }
-          }
+          Cache.addOrUpdateItems(specials.getItems());
 
           return specials;
         }
       });
   }
-
-  // @todo This is basically the same method as getSpecials. Compact?
 
   /**
    * Creates an observable that, when subscribed to, fetches both the current menu and the user's favorites, then uses both data
@@ -93,25 +77,19 @@ abstract public class Backend {
       .zipWith(Favorites.getFavorites(), new Func2<Menu, CanonicalSet<MenuItem>, Menu>() {
         @Override
         public Menu call(Menu menu, CanonicalSet<MenuItem> favorites) {
-          // Iterate through all items and check if they're in the favorites map.
+          // Iterate through all sections.
           for (MenuSection section : menu.getSections()) {
-            for (MenuItem item : section.getItems()) {
-              MenuItem favorite = favorites.get(item);
-
-              if (favorite != null) {
-                item.setFavorite(true); // Mark this special as favorite.
-
-                // Check if the favorite's extra data matches.
-                if (!favorite.equals(item)) {
-                  Favorites.updateFavorite(item); // Update the favorite's extra data.
-                }
-              }
-            }
+            Cache.addOrUpdateItems(section.getItems());
           }
 
           return menu;
         }
       });
+  }
+
+  // @todo Make backend query when item doesn't exist.
+  public static Observable<MenuItem> getItem(Object key) {
+    return Cache.getItem(key);
   }
 
   public interface Service {
