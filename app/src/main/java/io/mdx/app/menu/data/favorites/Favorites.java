@@ -27,7 +27,7 @@ public class Favorites {
   public static final String C_DESCRIPTION = "description";
   public static final String C_PICTURE     = "picture";
 
-  private static CanonicalSet<MenuItem> cache;
+  private static Observable<CanonicalSet<MenuItem>> favorites;
 
   private static Bus<FavoritesEvent> eventBus = new Bus<>();
 
@@ -48,43 +48,38 @@ public class Favorites {
   }
 
   public static Observable<CanonicalSet<MenuItem>> getFavorites() {
-    synchronized (Favorites.class) {
-      if (cache != null) {
-        return Observable.just(cache);
-      }
+    if (favorites == null) {
+      favorites = Database
+        .observe(new Callable<Cursor>() {
+          @Override
+          public Cursor call() throws Exception {
+            return Database.getInstance().getReadableDatabase()
+              .rawQuery(SQL.GET_FAVORITES, NONE);
+          }
+        })
+        .observeOn(Schedulers.computation())
+        .map(new Func1<Cursor, CanonicalSet<MenuItem>>() {
+          @Override
+          public CanonicalSet<MenuItem> call(Cursor cursor) {
+            CanonicalSet<MenuItem> items = new CanonicalSet<>(cursor.getCount());
+            cursor.moveToFirst();
+
+            while (!cursor.isAfterLast()) {
+              items.add(new MenuItem(cursor));
+              cursor.moveToNext();
+            }
+
+            cursor.close();
+
+            Timber.d("Found %d favorites.", items.size());
+
+            return items;
+          }
+        })
+        .replay();
     }
 
-    return Database
-      .observe(new Callable<Cursor>() {
-        @Override
-        public Cursor call() throws Exception {
-          return Database.getInstance().getReadableDatabase()
-            .rawQuery(SQL.GET_FAVORITES, NONE);
-        }
-      })
-      .observeOn(Schedulers.computation())
-      .map(new Func1<Cursor, CanonicalSet<MenuItem>>() {
-        @Override
-        public CanonicalSet<MenuItem> call(Cursor cursor) {
-          CanonicalSet<MenuItem> items = new CanonicalSet<>(cursor.getCount());
-          cursor.moveToFirst();
-
-          while (!cursor.isAfterLast()) {
-            items.add(new MenuItem(cursor));
-            cursor.moveToNext();
-          }
-
-          cursor.close();
-
-          Timber.d("Found %d favorites.", items.size());
-
-          synchronized (Favorites.class) {
-            cache = items;
-          }
-
-          return items;
-        }
-      });
+    return favorites;
   }
 
   public static Observable<Boolean> isFavorite(final String name) {
@@ -123,11 +118,12 @@ public class Favorites {
             });
         }
       })
+      .observeOn(Database.getScheduler())
       .subscribe(new Action1<Void>() {
         @Override
         public void call(Void aVoid) {
           synchronized (Favorites.class) {
-            cache = null; // @todo Modify set instead of nulling it.
+            favorites = null; // @todo Modify set instead of nulling it.
           }
 
           eventBus.send(new FavoritesEvent(FavoritesEvent.Type.ADD, item));
@@ -149,7 +145,7 @@ public class Favorites {
         @Override
         public void call(Void aVoid) {
           synchronized (Favorites.class) {
-            cache = null; // @todo Modify set instead of nulling it.
+            favorites = null; // @todo Modify set instead of nulling it.
           }
 
           eventBus.send(new FavoritesEvent(FavoritesEvent.Type.REMOVE, item));
@@ -177,7 +173,7 @@ public class Favorites {
         @Override
         public void call(Void aVoid) {
           synchronized (Favorites.class) {
-            cache = null; // @todo Modify set instead of nulling it.
+            favorites = null; // @todo Modify set instead of nulling it.
           }
 
           eventBus.send(new FavoritesEvent(FavoritesEvent.Type.UPDATE, item));

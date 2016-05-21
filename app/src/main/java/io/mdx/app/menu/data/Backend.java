@@ -31,20 +31,15 @@ abstract public class Backend {
       }
     }).create();
 
-  private static Service service;
+  private static Service service = (new Retrofit.Builder())
+    .baseUrl("https://mexxis.mdx.co/data/")
+    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+    .addConverterFactory(GsonConverterFactory.create(gson))
+    .build()
+    .create(Service.class);
 
-  private static Specials specialsCache;
-  private static Menu     menuCache;
-
-  static {
-    Retrofit retrofit = new Retrofit.Builder()
-      .baseUrl("https://mexxis.mdx.co/data/")
-      .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-      .addConverterFactory(GsonConverterFactory.create(gson))
-      .build();
-
-    service = retrofit.create(Service.class);
-  }
+  private static Observable<Specials> specials;
+  private static Observable<Menu>     menu;
 
   /**
    * Creates an observable that, when subscribed to, fetches both the current specials and the user's favorites, then uses both
@@ -54,27 +49,22 @@ abstract public class Backend {
    * @return Observable to fetch Specials
    */
   public static Observable<Specials> getSpecials() {
-    synchronized (Backend.class) {
-      if (specialsCache != null) {
-        return Observable.just(specialsCache);
-      }
+    if (specials == null) {
+      specials = service.getSpecials()
+        .subscribeOn(Schedulers.io()) // Use IO threads for network request.
+        .observeOn(Schedulers.computation()) // Use computation threads for processing data.
+        .zipWith(Favorites.getFavorites(), new Func2<Specials, CanonicalSet<MenuItem>, Specials>() {
+          @Override
+          public Specials call(Specials specials, CanonicalSet<MenuItem> favorites) {
+            Cache.addOrUpdateItems(specials.getItems());
+
+            return specials;
+          }
+        })
+        .replay();
     }
 
-    return service.getSpecials()
-      .subscribeOn(Schedulers.io()) // Use IO threads for network request.
-      .observeOn(Schedulers.computation()) // Use computation threads for processing data.
-      .zipWith(Favorites.getFavorites(), new Func2<Specials, CanonicalSet<MenuItem>, Specials>() {
-        @Override
-        public Specials call(Specials specials, CanonicalSet<MenuItem> favorites) {
-          Cache.addOrUpdateItems(specials.getItems());
-
-          synchronized (Backend.class) {
-            specialsCache = specials;
-          }
-
-          return specials;
-        }
-      });
+    return specials;
   }
 
   /**
@@ -84,30 +74,25 @@ abstract public class Backend {
    * @return Observable to fetch menu
    */
   public static Observable<Menu> getMenu() {
-    synchronized (Backend.class) {
-      if (menuCache != null) {
-        return Observable.just(menuCache);
-      }
+    if (menu == null) {
+      menu = service.getMenu()
+        .subscribeOn(Schedulers.io()) // Use IO threads for network request.
+        .observeOn(Schedulers.computation()) // Use computation threads for processing data.
+        .zipWith(Favorites.getFavorites(), new Func2<Menu, CanonicalSet<MenuItem>, Menu>() {
+          @Override
+          public Menu call(Menu menu, CanonicalSet<MenuItem> favorites) {
+            // Iterate through all sections.
+            for (MenuSection section : menu.getSections()) {
+              Cache.addOrUpdateItems(section.getItems());
+            }
+
+            return menu;
+          }
+        })
+        .replay();
     }
 
-    return service.getMenu()
-      .subscribeOn(Schedulers.io()) // Use IO threads for network request.
-      .observeOn(Schedulers.computation()) // Use computation threads for processing data.
-      .zipWith(Favorites.getFavorites(), new Func2<Menu, CanonicalSet<MenuItem>, Menu>() {
-        @Override
-        public Menu call(Menu menu, CanonicalSet<MenuItem> favorites) {
-          // Iterate through all sections.
-          for (MenuSection section : menu.getSections()) {
-            Cache.addOrUpdateItems(section.getItems());
-          }
-
-          synchronized (Backend.class) {
-            menuCache = menu;
-          }
-
-          return menu;
-        }
-      });
+    return menu;
   }
 
   // @todo Make backend query when item doesn't exist.
