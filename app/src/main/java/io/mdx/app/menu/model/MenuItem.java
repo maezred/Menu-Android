@@ -33,20 +33,40 @@ public class MenuItem {
     return _name;
   }
 
+  public void setName(String name) {
+    _name = name;
+  }
+
   public String getPrice() {
     return _price;
+  }
+
+  public void setPrice(String price) {
+    _price = price;
   }
 
   public String getDescription() {
     return _description;
   }
 
+  public void setDescription(String description) {
+    _description = description;
+  }
+
   public String getPicture() {
     return _picture;
   }
 
+  public void setPicture(String picture) {
+    _picture = picture;
+  }
+
   public Boolean getDisplay() {
     return _display;
+  }
+
+  public void setDisplay(Boolean display) {
+    _display = display;
   }
 
   public boolean getFavorite() {
