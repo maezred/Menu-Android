@@ -2,8 +2,8 @@ package io.mdx.app.menu.data.favorites;
 
 import android.database.Cursor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import io.mdx.app.menu.data.Bus;
@@ -28,6 +28,8 @@ public class Favorites {
   public static final String C_DESCRIPTION = "description";
   public static final String C_PICTURE     = "picture";
 
+  private static Set<MenuItem> cache;
+
   private static Bus<FavoritesEvent> eventBus = new Bus<>();
 
   public static Bus<FavoritesEvent> getEventBus() {
@@ -46,7 +48,13 @@ public class Favorites {
       .subscribe();
   }
 
-  public static Observable<List<MenuItem>> getFavorites() {
+  public static Observable<Set<MenuItem>> getFavorites() {
+    synchronized (Favorites.class) {
+      if (cache != null) {
+        return Observable.just(cache);
+      }
+    }
+
     return Database
       .observe(new Callable<Cursor>() {
         @Override
@@ -56,10 +64,10 @@ public class Favorites {
         }
       })
       .observeOn(Schedulers.computation())
-      .map(new Func1<Cursor, List<MenuItem>>() {
+      .map(new Func1<Cursor, Set<MenuItem>>() {
         @Override
-        public List<MenuItem> call(Cursor cursor) {
-          List<MenuItem> items = new ArrayList<>(cursor.getCount());
+        public Set<MenuItem> call(Cursor cursor) {
+          Set<MenuItem> items = new LinkedHashSet<>(cursor.getCount());
           cursor.moveToFirst();
 
           while (!cursor.isAfterLast()) {
@@ -70,6 +78,10 @@ public class Favorites {
           cursor.close();
 
           Timber.d("Found %d favorites.", items.size());
+
+          synchronized (Favorites.class) {
+            cache = items;
+          }
 
           return items;
         }
@@ -115,6 +127,10 @@ public class Favorites {
       .subscribe(new Action1<Void>() {
         @Override
         public void call(Void aVoid) {
+          synchronized (Favorites.class) {
+            cache = null; // @todo Modify set instead of nulling it.
+          }
+
           eventBus.send(new FavoritesEvent(FavoritesEvent.Type.ADD, item));
         }
       });
@@ -133,6 +149,10 @@ public class Favorites {
       .subscribe(new Action1<Void>() {
         @Override
         public void call(Void aVoid) {
+          synchronized (Favorites.class) {
+            cache = null; // @todo Modify set instead of nulling it.
+          }
+
           eventBus.send(new FavoritesEvent(FavoritesEvent.Type.REMOVE, item));
         }
       });
@@ -157,6 +177,10 @@ public class Favorites {
       .subscribe(new Action1<Void>() {
         @Override
         public void call(Void aVoid) {
+          synchronized (Favorites.class) {
+            cache = null; // @todo Modify set instead of nulling it.
+          }
+
           eventBus.send(new FavoritesEvent(FavoritesEvent.Type.UPDATE, item));
         }
       });

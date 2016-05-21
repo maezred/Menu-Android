@@ -6,8 +6,8 @@ import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.mdx.app.menu.data.favorites.Favorites;
 import io.mdx.app.menu.model.Menu;
@@ -59,9 +59,9 @@ abstract public class Backend {
     return service.getSpecials()
       .subscribeOn(Schedulers.io()) // Use IO threads for network request.
       .observeOn(Schedulers.computation()) // Use computation threads for processing data.
-      .zipWith(Favorites.getFavorites(), new Func2<Specials, List<MenuItem>, Specials>() {
+      .zipWith(Favorites.getFavorites(), new Func2<Specials, Set<MenuItem>, Specials>() {
         @Override
-        public Specials call(Specials specials, List<MenuItem> favorites) {
+        public Specials call(Specials specials, Set<MenuItem> favorites) {
           Map<String, MenuItem> favoriteLookup = new HashMap<>();
 
           // Index the favorites in a map for quick lookup.
@@ -100,9 +100,9 @@ abstract public class Backend {
     return service.getMenu()
       .subscribeOn(Schedulers.io()) // Use IO threads for network request.
       .observeOn(Schedulers.computation()) // Use computation threads for processing data.
-      .zipWith(Favorites.getFavorites(), new Func2<Menu, List<MenuItem>, Menu>() {
+      .zipWith(Favorites.getFavorites(), new Func2<Menu, Set<MenuItem>, Menu>() {
         @Override
-        public Menu call(Menu menu, List<MenuItem> favorites) {
+        public Menu call(Menu menu, Set<MenuItem> favorites) {
           Map<String, MenuItem> favoriteLookup = new HashMap<>();
 
           // Index the favorites in a map for quick lookup.
