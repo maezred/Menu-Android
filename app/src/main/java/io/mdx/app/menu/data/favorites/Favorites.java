@@ -5,6 +5,7 @@ import android.database.Cursor;
 import java.util.concurrent.Callable;
 
 import io.mdx.app.menu.data.Bus;
+import io.mdx.app.menu.data.Cache;
 import io.mdx.app.menu.data.CanonicalSet;
 import io.mdx.app.menu.data.Database;
 import io.mdx.app.menu.model.MenuItem;
@@ -71,6 +72,7 @@ public class Favorites {
 
             cursor.close();
 
+            Cache.addOrUpdateItems(items, true);
             Timber.d("Found %d favorites.", items.size());
 
             return items;

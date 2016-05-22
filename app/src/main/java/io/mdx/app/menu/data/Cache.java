@@ -34,7 +34,7 @@ public class Cache {
       .observeOn(Schedulers.immediate());
   }
 
-  public static MenuItem addOrUpdateItem(MenuItem item) {
+  public static MenuItem addOrUpdateItem(MenuItem item, boolean setFavorite) {
     MenuItem existing = null;
 
     synchronized (items) {
@@ -71,6 +71,10 @@ public class Cache {
         return existing;
       }
 
+      if (!setFavorite) {
+        item.setFavorite(existing.getFavorite());
+      }
+
       synchronized (items) {
         items.update(item);
       }
@@ -81,11 +85,11 @@ public class Cache {
     return item;
   }
 
-  public static void addOrUpdateItems(List<MenuItem> items) {
+  public static void addOrUpdateItems(List<MenuItem> items, boolean setFavorite) {
     ListIterator<MenuItem> iterator = items.listIterator();
 
     while (iterator.hasNext()) {
-      iterator.set(addOrUpdateItem(iterator.next()));
+      iterator.set(addOrUpdateItem(iterator.next(), setFavorite));
     }
   }
 
