@@ -76,7 +76,7 @@ public class Favorites {
             return items;
           }
         })
-        .replay();
+        .cache();
     }
 
     return favorites;

@@ -61,7 +61,7 @@ abstract public class Backend {
             return specials;
           }
         })
-        .replay();
+        .cache();
     }
 
     return specials;
@@ -89,7 +89,7 @@ abstract public class Backend {
             return menu;
           }
         })
-        .replay();
+        .cache();
     }
 
     return menu;
