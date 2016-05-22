@@ -261,7 +261,7 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
     Object[] array = new Object[list.size()];
 
     for (int i = 0, j = array.length; i < j; ++i) {
-      array[i] = list.get(i);
+      array[i] = list.get(i).value;
     }
 
     return array;
