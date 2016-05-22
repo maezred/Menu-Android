@@ -2,11 +2,10 @@ package io.mdx.app.menu.data.favorites;
 
 import android.database.Cursor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.mdx.app.menu.data.Bus;
+import io.mdx.app.menu.data.CanonicalSet;
 import io.mdx.app.menu.data.Database;
 import io.mdx.app.menu.model.MenuItem;
 import rx.Observable;
@@ -28,6 +27,8 @@ public class Favorites {
   public static final String C_DESCRIPTION = "description";
   public static final String C_PICTURE     = "picture";
 
+  private static Observable<CanonicalSet<MenuItem>> favorites;
+
   private static Bus<FavoritesEvent> eventBus = new Bus<>();
 
   public static Bus<FavoritesEvent> getEventBus() {
@@ -46,34 +47,39 @@ public class Favorites {
       .subscribe();
   }
 
-  public static Observable<List<MenuItem>> getFavorites() {
-    return Database
-      .observe(new Callable<Cursor>() {
-        @Override
-        public Cursor call() throws Exception {
-          return Database.getInstance().getReadableDatabase()
-            .rawQuery(SQL.GET_FAVORITES, NONE);
-        }
-      })
-      .observeOn(Schedulers.computation())
-      .map(new Func1<Cursor, List<MenuItem>>() {
-        @Override
-        public List<MenuItem> call(Cursor cursor) {
-          List<MenuItem> items = new ArrayList<>(cursor.getCount());
-          cursor.moveToFirst();
-
-          while (!cursor.isAfterLast()) {
-            items.add(new MenuItem(cursor));
-            cursor.moveToNext();
+  public static Observable<CanonicalSet<MenuItem>> getFavorites() {
+    if (favorites == null) {
+      favorites = Database
+        .observe(new Callable<Cursor>() {
+          @Override
+          public Cursor call() throws Exception {
+            return Database.getInstance().getReadableDatabase()
+              .rawQuery(SQL.GET_FAVORITES, NONE);
           }
+        })
+        .observeOn(Schedulers.computation())
+        .map(new Func1<Cursor, CanonicalSet<MenuItem>>() {
+          @Override
+          public CanonicalSet<MenuItem> call(Cursor cursor) {
+            CanonicalSet<MenuItem> items = new CanonicalSet<>(cursor.getCount());
+            cursor.moveToFirst();
 
-          cursor.close();
+            while (!cursor.isAfterLast()) {
+              items.add(new MenuItem(cursor));
+              cursor.moveToNext();
+            }
 
-          Timber.d("Found %d favorites.", items.size());
+            cursor.close();
 
-          return items;
-        }
-      });
+            Timber.d("Found %d favorites.", items.size());
+
+            return items;
+          }
+        })
+        .replay();
+    }
+
+    return favorites;
   }
 
   public static Observable<Boolean> isFavorite(final String name) {
@@ -112,9 +118,14 @@ public class Favorites {
             });
         }
       })
+      .observeOn(Database.getScheduler())
       .subscribe(new Action1<Void>() {
         @Override
         public void call(Void aVoid) {
+          synchronized (Favorites.class) {
+            favorites = null; // @todo Modify set instead of nulling it.
+          }
+
           eventBus.send(new FavoritesEvent(FavoritesEvent.Type.ADD, item));
         }
       });
@@ -133,7 +144,39 @@ public class Favorites {
       .subscribe(new Action1<Void>() {
         @Override
         public void call(Void aVoid) {
+          synchronized (Favorites.class) {
+            favorites = null; // @todo Modify set instead of nulling it.
+          }
+
           eventBus.send(new FavoritesEvent(FavoritesEvent.Type.REMOVE, item));
+        }
+      });
+  }
+
+  public static void updateFavorite(final MenuItem item) {
+    Database
+      .observe(new Runnable() {
+        @Override
+        public void run() {
+          Timber.d("Updated favorite in database: %s.", item.getName());
+          Database.getInstance().getWritableDatabase()
+            .execSQL(SQL.UPDATE_FAVORITE, new String[]{
+              item.getPrice(),
+              item.getDescription(),
+              item.getPicture(),
+
+              item.getName() // WHERE clause
+            });
+        }
+      })
+      .subscribe(new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+          synchronized (Favorites.class) {
+            favorites = null; // @todo Modify set instead of nulling it.
+          }
+
+          eventBus.send(new FavoritesEvent(FavoritesEvent.Type.UPDATE, item));
         }
       });
   }

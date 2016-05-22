@@ -4,6 +4,7 @@ import com.trello.rxlifecycle.FragmentEvent;
 
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import io.mdx.app.menu.view.ItemHolder;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Created by moltendorf on 16/4/29.
@@ -35,7 +37,13 @@ public class FavoritesFragment extends RecyclerFragment {
   @Override
   public Subscription fetchData() {
     return Favorites.getFavorites()
-      .compose(this.<List<MenuItem>>bindUntilEvent(FragmentEvent.DESTROY))
+      .compose(this.<Set<MenuItem>>bindUntilEvent(FragmentEvent.DESTROY))
+      .map(new Func1<Set<MenuItem>, List<MenuItem>>() {
+        @Override
+        public List<MenuItem> call(Set<MenuItem> data) {
+          return new ArrayList<>(data);
+        }
+      })
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(new Action1<List<MenuItem>>() {
         @Override

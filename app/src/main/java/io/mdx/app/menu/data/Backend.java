@@ -5,9 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import io.mdx.app.menu.data.favorites.Favorites;
 import io.mdx.app.menu.model.Menu;
@@ -34,70 +31,73 @@ abstract public class Backend {
       }
     }).create();
 
-  private static Service service;
+  private static Service service = (new Retrofit.Builder())
+    .baseUrl("https://mexxis.mdx.co/data/")
+    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+    .addConverterFactory(GsonConverterFactory.create(gson))
+    .build()
+    .create(Service.class);
 
-  static {
-    Retrofit retrofit = new Retrofit.Builder()
-      .baseUrl("https://mexxis.mdx.co/data/")
-      .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-      .addConverterFactory(GsonConverterFactory.create(gson))
-      .build();
+  private static Observable<Specials> specials;
+  private static Observable<Menu>     menu;
 
-    service = retrofit.create(Service.class);
-  }
-
-  public static Service getService() {
-    return service;
-  }
-
+  /**
+   * Creates an observable that, when subscribed to, fetches both the current specials and the user's favorites, then uses both
+   * data sets to create a list of specials with each special that's in the user's favorites list properly flagged as a
+   * favorite.
+   *
+   * @return Observable to fetch Specials
+   */
   public static Observable<Specials> getSpecials() {
-    return service.getSpecials()
-      .subscribeOn(Schedulers.io())
-      .observeOn(Schedulers.computation())
-      .zipWith(Favorites.getFavorites(), new Func2<Specials, List<MenuItem>, Specials>() {
-        @Override
-        public Specials call(Specials specials, List<MenuItem> favorites) {
-          Map<String, MenuItem> favoriteLookup = new HashMap<>();
+    if (specials == null) {
+      specials = service.getSpecials()
+        .subscribeOn(Schedulers.io()) // Use IO threads for network request.
+        .observeOn(Schedulers.computation()) // Use computation threads for processing data.
+        .zipWith(Favorites.getFavorites(), new Func2<Specials, CanonicalSet<MenuItem>, Specials>() {
+          @Override
+          public Specials call(Specials specials, CanonicalSet<MenuItem> favorites) {
+            Cache.addOrUpdateItems(specials.getItems());
 
-          for (MenuItem favorite : favorites) {
-            favoriteLookup.put(favorite.getName(), favorite);
+            return specials;
           }
+        })
+        .replay();
+    }
 
-          for (MenuItem special : specials.getItems()) {
-            if (favoriteLookup.containsKey(special.getName())) {
-              special.setFavorite(true);
-            }
-          }
-
-          return specials;
-        }
-      });
+    return specials;
   }
 
+  /**
+   * Creates an observable that, when subscribed to, fetches both the current menu and the user's favorites, then uses both data
+   * sets to create the menu with each item that's in the user's favorites list properly flagged as a favorite.
+   *
+   * @return Observable to fetch menu
+   */
   public static Observable<Menu> getMenu() {
-    return service.getMenu()
-      .subscribeOn(Schedulers.io())
-      .observeOn(Schedulers.computation())
-      .zipWith(Favorites.getFavorites(), new Func2<Menu, List<MenuItem>, Menu>() {
-        @Override
-        public Menu call(Menu menu, List<MenuItem> favorites) {
-          Map<String, MenuItem> favoriteLookup = new HashMap<>();
-
-          for (MenuItem favorite : favorites) {
-            favoriteLookup.put(favorite.getName(), favorite);
-          }
-
-          for (MenuSection section : menu.getSections()) {
-            for (MenuItem item : section.getItems()) {
-              if (favoriteLookup.containsKey(item.getName())) {
-                item.setFavorite(true);
-              }
+    if (menu == null) {
+      menu = service.getMenu()
+        .subscribeOn(Schedulers.io()) // Use IO threads for network request.
+        .observeOn(Schedulers.computation()) // Use computation threads for processing data.
+        .zipWith(Favorites.getFavorites(), new Func2<Menu, CanonicalSet<MenuItem>, Menu>() {
+          @Override
+          public Menu call(Menu menu, CanonicalSet<MenuItem> favorites) {
+            // Iterate through all sections.
+            for (MenuSection section : menu.getSections()) {
+              Cache.addOrUpdateItems(section.getItems());
             }
-          }
 
-          return menu;
-        }
-      });
+            return menu;
+          }
+        })
+        .replay();
+    }
+
+    return menu;
+  }
+
+  // @todo Make backend query when item doesn't exist.
+  public static Observable<MenuItem> getItem(Object key) {
+    return Cache.getItem(key);
   }
 
   public interface Service {
