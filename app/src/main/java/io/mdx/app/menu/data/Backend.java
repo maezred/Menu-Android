@@ -18,6 +18,7 @@ import retrofit2.http.GET;
 import rx.Observable;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by moltendorf on 16/5/9.
@@ -57,6 +58,7 @@ abstract public class Backend {
           @Override
           public Specials call(Specials specials, CanonicalSet<MenuItem> favorites) {
             Cache.addOrUpdateItems(specials.getItems());
+            Timber.d("Found %d specials.", items.size());
 
             return specials;
           }
@@ -84,6 +86,7 @@ abstract public class Backend {
             // Iterate through all sections.
             for (MenuSection section : menu.getSections()) {
               Cache.addOrUpdateItems(section.getItems());
+              Timber.d("Found %d items in %s section.", items.size(), section.getName());
             }
 
             return menu;
