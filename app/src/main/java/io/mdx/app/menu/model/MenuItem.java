@@ -94,7 +94,7 @@ public class MenuItem {
 
       return _name.equals(menuItem._name);
     } else if (Integer.class == type) {
-      return getId() == o;
+      return getId() == ((int) o);
     }
 
     return false;
