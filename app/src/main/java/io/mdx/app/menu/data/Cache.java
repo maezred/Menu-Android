@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import io.mdx.app.menu.model.MenuItem;
+import io.mdx.app.menu.util.ObjectUtils;
 import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -52,19 +53,19 @@ public class Cache {
           break check;
         }
 
-        if (!existing.getPrice().equals(item.getPrice())) {
+        if (!ObjectUtils.equals(existing.getPrice(), item.getPrice())) {
           break check;
         }
 
-        if (!existing.getDescription().equals(item.getDescription())) {
+        if (!ObjectUtils.equals(existing.getDescription(), item.getDescription())) {
           break check;
         }
 
-        if (!existing.getPicture().equals(item.getPicture())) {
+        if (!ObjectUtils.equals(existing.getPicture(), item.getPicture())) {
           break check;
         }
 
-        if (!existing.getDisplay().equals(item.getDisplay())) {
+        if (!ObjectUtils.equals(existing.getDisplay(), item.getDisplay())) {
           break check;
         }
 
