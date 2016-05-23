@@ -1,5 +1,7 @@
 package io.mdx.app.menu.fragment;
 
+import android.content.Intent;
+
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.FragmentEvent;
 
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.mdx.app.menu.R;
+import io.mdx.app.menu.activity.DetailActivity;
 import io.mdx.app.menu.data.favorites.Favorites;
 import io.mdx.app.menu.model.MenuItem;
 import io.mdx.app.menu.view.ItemHolder;
@@ -44,7 +47,8 @@ public class FavoritesFragment extends RecyclerFragment {
             .subscribe(new Action1<Void>() {
               @Override
               public void call(Void aVoid) {
-                // Placeholder.
+                Intent intent = new Intent(getContext(), DetailActivity.class);
+                startActivity(intent);
               }
             });
         }
