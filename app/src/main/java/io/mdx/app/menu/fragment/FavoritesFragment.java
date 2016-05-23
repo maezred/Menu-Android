@@ -20,7 +20,7 @@ import rx.functions.Func1;
 /**
  * Created by moltendorf on 16/4/29.
  */
-public class FavoritesFragment extends RecyclerFragment {
+public class FavoritesFragment extends ItemRecyclerFragment {
   public static final String ACTION_FAVORITES = "io.mdx.app.menu.FAVORITES";
 
   private static FragmentType TYPE = FragmentType.FAVORITES;
@@ -31,7 +31,11 @@ public class FavoritesFragment extends RecyclerFragment {
 
   @Override
   public void populateFactories(Set<RecyclerViewAdapter.Factory> factories) {
-    factories.add(new ItemHolder.Factory(R.layout.row_favorites_item));
+    ItemHolder.Factory factory = new ItemHolder.Factory(R.layout.row_favorites_item);
+
+    registerItemHolderFactory(factory);
+
+    factories.add(factory);
   }
 
   @Override

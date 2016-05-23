@@ -20,7 +20,7 @@ import rx.functions.Action1;
 /**
  * Created by moltendorf on 16/4/29.
  */
-public class SpecialsFragment extends RecyclerFragment {
+public class SpecialsFragment extends ItemRecyclerFragment {
   public static final String ACTION_SPECIALS = "io.mdx.app.menu.SPECIALS";
 
   private static FragmentType TYPE = FragmentType.SPECIALS;
@@ -31,7 +31,11 @@ public class SpecialsFragment extends RecyclerFragment {
 
   @Override
   public void populateFactories(Set<RecyclerViewAdapter.Factory> factories) {
-    factories.add(new ItemHolder.Factory(R.layout.row_special_item));
+    ItemHolder.Factory factory = new ItemHolder.Factory(R.layout.row_special_item);
+
+    registerItemHolderFactory(factory);
+
+    factories.add(factory);
   }
 
   @Override

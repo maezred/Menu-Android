@@ -22,7 +22,7 @@ import rx.functions.Func1;
 /**
  * Created by moltendorf on 16/4/29.
  */
-public class MenuFragment extends RecyclerFragment {
+public class MenuFragment extends ItemRecyclerFragment {
   public static final String ACTION_MENU = "io.mdx.app.menu.MENU";
 
   private static FragmentType TYPE = FragmentType.MENU;
@@ -33,7 +33,11 @@ public class MenuFragment extends RecyclerFragment {
 
   @Override
   public void populateFactories(Set<RecyclerViewAdapter.Factory> factories) {
-    factories.add(new ItemHolder.Factory(R.layout.row_menu_item));
+    ItemHolder.Factory factory = new ItemHolder.Factory(R.layout.row_menu_item);
+
+    registerItemHolderFactory(factory);
+
+    factories.add(factory);
     factories.add(new SectionHolder.Factory(R.layout.row_menu_section));
   }
 
