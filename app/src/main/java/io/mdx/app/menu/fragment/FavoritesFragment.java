@@ -1,5 +1,6 @@
 package io.mdx.app.menu.fragment;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.FragmentEvent;
 
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
@@ -28,7 +29,25 @@ public class FavoritesFragment extends RecyclerFragment {
 
   @Override
   public void populateFactories(Set<RecyclerViewAdapter.Factory> factories) {
-    factories.add(new ItemHolder.Factory(R.layout.row_favorites_item));
+    ItemHolder.Factory factory = new ItemHolder.Factory(R.layout.row_favorites_item);
+
+    factory.created()
+      .compose(this.<ItemHolder>bindUntilEvent(FragmentEvent.DESTROY))
+      .subscribe(new Action1<ItemHolder>() {
+        @Override
+        public void call(ItemHolder itemHolder) {
+          RxView.clicks(itemHolder.itemView)
+            .compose(FavoritesFragment.this.<Void>bindUntilEvent(FragmentEvent.DESTROY))
+            .subscribe(new Action1<Void>() {
+              @Override
+              public void call(Void aVoid) {
+                // Placeholder.
+              }
+            });
+        }
+      });
+
+    factories.add(factory);
   }
 
   @Override
