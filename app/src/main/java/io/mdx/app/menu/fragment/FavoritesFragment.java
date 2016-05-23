@@ -1,8 +1,5 @@
 package io.mdx.app.menu.fragment;
 
-import android.content.Intent;
-
-import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.FragmentEvent;
 
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
@@ -12,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import io.mdx.app.menu.R;
-import io.mdx.app.menu.activity.DetailActivity;
 import io.mdx.app.menu.data.favorites.Favorites;
 import io.mdx.app.menu.model.MenuItem;
 import io.mdx.app.menu.view.ItemHolder;
@@ -24,7 +20,7 @@ import rx.functions.Func1;
 /**
  * Created by moltendorf on 16/4/29.
  */
-public class FavoritesFragment extends RecyclerFragment {
+public class FavoritesFragment extends ItemRecyclerFragment {
   public static final String ACTION_FAVORITES = "io.mdx.app.menu.FAVORITES";
 
   private static FragmentType TYPE = FragmentType.FAVORITES;
@@ -37,22 +33,7 @@ public class FavoritesFragment extends RecyclerFragment {
   public void populateFactories(Set<RecyclerViewAdapter.Factory> factories) {
     ItemHolder.Factory factory = new ItemHolder.Factory(R.layout.row_favorites_item);
 
-    factory.created()
-      .compose(this.<ItemHolder>bindUntilEvent(FragmentEvent.DESTROY))
-      .subscribe(new Action1<ItemHolder>() {
-        @Override
-        public void call(ItemHolder itemHolder) {
-          RxView.clicks(itemHolder.itemView)
-            .compose(FavoritesFragment.this.<Void>bindUntilEvent(FragmentEvent.DESTROY))
-            .subscribe(new Action1<Void>() {
-              @Override
-              public void call(Void aVoid) {
-                Intent intent = new Intent(getContext(), DetailActivity.class);
-                startActivity(intent);
-              }
-            });
-        }
-      });
+    registerItemHolderFactory(factory);
 
     factories.add(factory);
   }
