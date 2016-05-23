@@ -29,6 +29,14 @@
       </intent-filter>
     </activity>
     <activity
+      android:name=".activity.DetailActivity"
+      android:label="@string/title_activity_details"
+      android:parentActivityName=".activity.MainActivity">
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="io.mdx.app.menu.activity.MainActivity"/>
+    </activity>
+    <activity
       android:name=".activity.SettingsActivity"
       android:label="@string/title_activity_settings"
       android:parentActivityName=".activity.MainActivity">
