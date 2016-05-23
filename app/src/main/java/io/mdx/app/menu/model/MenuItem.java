@@ -25,24 +25,48 @@ public class MenuItem {
     favorite = true;
   }
 
+  public int getId() {
+    return hashCode(); // Simple hack for now.
+  }
+
   public String getName() {
     return _name;
+  }
+
+  public void setName(String name) {
+    _name = name;
   }
 
   public String getPrice() {
     return _price;
   }
 
+  public void setPrice(String price) {
+    _price = price;
+  }
+
   public String getDescription() {
     return _description;
+  }
+
+  public void setDescription(String description) {
+    _description = description;
   }
 
   public String getPicture() {
     return _picture;
   }
 
+  public void setPicture(String picture) {
+    _picture = picture;
+  }
+
   public Boolean getDisplay() {
     return _display;
+  }
+
+  public void setDisplay(Boolean display) {
+    _display = display;
   }
 
   public boolean getFavorite() {
@@ -51,5 +75,33 @@ public class MenuItem {
 
   public void setFavorite(boolean favorite) {
     this.favorite = favorite;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null) {
+      return false;
+    }
+
+    Class<?> type = o.getClass();
+
+    if (getClass() == type) {
+      MenuItem menuItem = (MenuItem) o;
+
+      return _name.equals(menuItem._name);
+    } else if (Integer.class == type) {
+      return getId() == ((int) o);
+    }
+
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return _name.hashCode();
   }
 }

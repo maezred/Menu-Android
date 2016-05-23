@@ -1,15 +1,15 @@
 package io.mdx.app.menu.data.favorites;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
+import io.mdx.app.menu.data.Bus;
+import io.mdx.app.menu.data.CanonicalSet;
 import io.mdx.app.menu.data.Database;
 import io.mdx.app.menu.model.MenuItem;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -27,43 +27,59 @@ public class Favorites {
   public static final String C_DESCRIPTION = "description";
   public static final String C_PICTURE     = "picture";
 
-  public static Runnable createTable(final SQLiteDatabase db) {
-    return new Runnable() {
-      @Override
-      public void run() {
-        db.execSQL(SQL.CREATE_TABLE);
-      }
-    };
+  private static Observable<CanonicalSet<MenuItem>> favorites;
+
+  private static Bus<FavoritesEvent> eventBus = new Bus<>();
+
+  public static Bus<FavoritesEvent> getEventBus() {
+    return eventBus;
   }
 
-  public static Observable<List<MenuItem>> getFavorites() {
-    return Database
-      .observe(new Callable<Cursor>() {
+  public static void createTable() {
+    Database
+      .observe(new Runnable() {
         @Override
-        public Cursor call() throws Exception {
-          return Database.getInstance().getReadableDatabase()
-            .rawQuery(SQL.GET_FAVORITES, NONE);
+        public void run() {
+          Database.getInstance().getWritableDatabase()
+            .execSQL(SQL.CREATE_TABLE);
         }
       })
-      .observeOn(Schedulers.computation())
-      .map(new Func1<Cursor, List<MenuItem>>() {
-        @Override
-        public List<MenuItem> call(Cursor cursor) {
-          List<MenuItem> items = new ArrayList<>(cursor.getCount());
-          cursor.moveToFirst();
+      .subscribe();
+  }
 
-          while (!cursor.isAfterLast()) {
-            items.add(new MenuItem(cursor));
-            cursor.moveToNext();
+  public static Observable<CanonicalSet<MenuItem>> getFavorites() {
+    if (favorites == null) {
+      favorites = Database
+        .observe(new Callable<Cursor>() {
+          @Override
+          public Cursor call() throws Exception {
+            return Database.getInstance().getReadableDatabase()
+              .rawQuery(SQL.GET_FAVORITES, NONE);
           }
+        })
+        .observeOn(Schedulers.computation())
+        .map(new Func1<Cursor, CanonicalSet<MenuItem>>() {
+          @Override
+          public CanonicalSet<MenuItem> call(Cursor cursor) {
+            CanonicalSet<MenuItem> items = new CanonicalSet<>(cursor.getCount());
+            cursor.moveToFirst();
 
-          cursor.close();
+            while (!cursor.isAfterLast()) {
+              items.add(new MenuItem(cursor));
+              cursor.moveToNext();
+            }
 
-          Timber.d("Found %d favorites.", items.size());
+            cursor.close();
 
-          return items;
-        }
-      });
+            Timber.d("Found %d favorites.", items.size());
+
+            return items;
+          }
+        })
+        .replay();
+    }
+
+    return favorites;
   }
 
   public static Observable<Boolean> isFavorite(final String name) {
@@ -102,7 +118,17 @@ public class Favorites {
             });
         }
       })
-      .subscribe();
+      .observeOn(Database.getScheduler())
+      .subscribe(new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+          synchronized (Favorites.class) {
+            favorites = null; // @todo Modify set instead of nulling it.
+          }
+
+          eventBus.send(new FavoritesEvent(FavoritesEvent.Type.ADD, item));
+        }
+      });
   }
 
   public static void removeFavorite(final MenuItem item) {
@@ -115,6 +141,67 @@ public class Favorites {
             .execSQL(SQL.REMOVE_FAVORITE, new String[]{item.getName()});
         }
       })
-      .subscribe();
+      .subscribe(new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+          synchronized (Favorites.class) {
+            favorites = null; // @todo Modify set instead of nulling it.
+          }
+
+          eventBus.send(new FavoritesEvent(FavoritesEvent.Type.REMOVE, item));
+        }
+      });
+  }
+
+  public static void updateFavorite(final MenuItem item) {
+    Database
+      .observe(new Runnable() {
+        @Override
+        public void run() {
+          Timber.d("Updated favorite in database: %s.", item.getName());
+          Database.getInstance().getWritableDatabase()
+            .execSQL(SQL.UPDATE_FAVORITE, new String[]{
+              item.getPrice(),
+              item.getDescription(),
+              item.getPicture(),
+
+              item.getName() // WHERE clause
+            });
+        }
+      })
+      .subscribe(new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+          synchronized (Favorites.class) {
+            favorites = null; // @todo Modify set instead of nulling it.
+          }
+
+          eventBus.send(new FavoritesEvent(FavoritesEvent.Type.UPDATE, item));
+        }
+      });
+  }
+
+  public static class FavoritesEvent {
+    private Type     type;
+    private MenuItem item;
+
+    public FavoritesEvent(Type type, MenuItem item) {
+      this.type = type;
+      this.item = item;
+    }
+
+    public Type getType() {
+      return type;
+    }
+
+    public MenuItem getItem() {
+      return item;
+    }
+
+    public enum Type {
+      ADD,
+      REMOVE,
+      UPDATE
+    }
   }
 }

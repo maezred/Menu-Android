@@ -24,4 +24,11 @@ interface SQL {
 
   String REMOVE_FAVORITE = "DELETE FROM " + Favorites.TABLE + " " +
     "WHERE " + Favorites.C_NAME + " = ?";
+
+  String UPDATE_FAVORITE = "UPDATE " + Favorites.TABLE + " " +
+    "SET " +
+    Favorites.C_PRICE + " = ?, " +
+    Favorites.C_DESCRIPTION + " = ?, " +
+    Favorites.C_PICTURE + " = ? " +
+    "WHERE " + Favorites.C_NAME + " = ?";
 }

@@ -41,7 +41,8 @@ public class Database extends SQLiteOpenHelper {
   @Override
   public void onCreate(SQLiteDatabase db) {
     Timber.d("Creating new database.");
-    observe(Favorites.createTable(db)).subscribe();
+
+    Favorites.createTable();
   }
 
   @Override
