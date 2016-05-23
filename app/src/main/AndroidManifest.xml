@@ -24,6 +24,7 @@
       <intent-filter>
         <action android:name="io.mdx.app.menu.SPECIALS"/>
         <action android:name="io.mdx.app.menu.MENU"/>
+        <action android:name="io.mdx.app.menu.FAVORITES"/>
 
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
