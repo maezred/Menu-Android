@@ -2,15 +2,11 @@ package io.mdx.app.menu.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.trello.rxlifecycle.FragmentEvent;
-import com.trello.rxlifecycle.components.support.RxFragment;
 
 import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
@@ -27,16 +23,14 @@ import rx.functions.Action1;
  * Created by moltendorf on 16/4/29.
  */
 @SuppressLint("ValidFragment")
-abstract public class RecyclerFragment extends RxFragment {
+abstract public class RecyclerFragment extends BaseFragment {
   protected RecyclerViewAdapter adapter;
   protected List data = new ArrayList();
   protected RecyclerView list;
   protected Subscription subscription;
 
-  private int layout;
-
-  protected RecyclerFragment(int layout) {
-    this.layout = layout;
+  public RecyclerFragment(int layout) {
+    super(layout);
 
     registerObservers();
 
@@ -59,12 +53,6 @@ abstract public class RecyclerFragment extends RxFragment {
           }
         }
       });
-  }
-
-  @Nullable
-  @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    return inflater.inflate(layout, container, false);
   }
 
   @Override
