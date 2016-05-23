@@ -32,7 +32,8 @@
     <activity
       android:name=".activity.DetailActivity"
       android:label="@string/title_activity_details"
-      android:parentActivityName=".activity.MainActivity">
+      android:parentActivityName=".activity.MainActivity"
+      android:theme="@style/AppTheme.NoActionBar">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
         android:value="io.mdx.app.menu.activity.MainActivity"/>
