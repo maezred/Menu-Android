@@ -3,17 +3,18 @@ package io.mdx.app.menu.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import io.mdx.app.menu.R;
 
 /**
  * Created by moltendorf on 16/4/29.
  */
-abstract public class BaseActivity extends AppCompatActivity {
+abstract public class BaseActivity extends RxAppCompatActivity {
   protected int layout;
 
   protected BaseActivity(int layout) {
