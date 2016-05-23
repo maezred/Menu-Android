@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import io.mdx.app.menu.data.favorites.Favorites;
 import io.mdx.app.menu.model.Menu;
@@ -18,6 +19,7 @@ import retrofit2.http.GET;
 import rx.Observable;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by moltendorf on 16/5/9.
@@ -56,12 +58,15 @@ abstract public class Backend {
         .zipWith(Favorites.getFavorites(), new Func2<Specials, CanonicalSet<MenuItem>, Specials>() {
           @Override
           public Specials call(Specials specials, CanonicalSet<MenuItem> favorites) {
-            Cache.addOrUpdateItems(specials.getItems());
+            List<MenuItem> items = specials.getItems();
+
+            Cache.addOrUpdateItems(items, false);
+            Timber.d("Found %d specials.", items.size());
 
             return specials;
           }
         })
-        .replay();
+        .cache();
     }
 
     return specials;
@@ -83,13 +88,16 @@ abstract public class Backend {
           public Menu call(Menu menu, CanonicalSet<MenuItem> favorites) {
             // Iterate through all sections.
             for (MenuSection section : menu.getSections()) {
-              Cache.addOrUpdateItems(section.getItems());
+              List<MenuItem> items = section.getItems();
+
+              Cache.addOrUpdateItems(items, false);
+              Timber.d("Found %d items in %s section.", items.size(), section.getName());
             }
 
             return menu;
           }
         })
-        .replay();
+        .cache();
     }
 
     return menu;

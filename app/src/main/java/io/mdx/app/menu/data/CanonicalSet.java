@@ -19,8 +19,8 @@ import java.util.TreeSet;
  * Created by moltendorf on 16/5/21.
  */
 public class CanonicalSet<T> implements List<T>, Set<T> {
-  private ArrayList<Node<T>>        list;
-  private HashMap<Node<T>, Node<T>> map;
+  private ArrayList<Node<T>>  list;
+  private HashMap<T, Node<T>> map;
 
   public CanonicalSet() {
     list = new ArrayList<>();
@@ -59,7 +59,7 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
     if (!map.containsKey(object)) {
       Node<T> node = new Node<>(index, object);
 
-      map.put(node, node);
+      map.put(object, node);
       list.add(index, node);
 
       for (int i = index + 1, j = list.size(); i < j; ++i) {
@@ -73,7 +73,7 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
     if (!map.containsKey(object)) {
       Node<T> node = new Node<>(list.size(), object);
 
-      map.put(node, node);
+      map.put(object, node);
       list.add(node);
 
       return true;
@@ -167,7 +167,7 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
   @Override
   public T remove(int index) {
     Node<T> node = list.remove(index);
-    map.remove(node);
+    map.remove(node.value);
 
     return node.value;
   }
@@ -218,7 +218,7 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
     int index = 0;
     for (Node<T> node : list) {
       node.index = index++;
-      map.put(node, node);
+      map.put(node.value, node);
     }
 
     return newSize != size;
@@ -230,9 +230,9 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
 
     T previous = node.value;
 
-    map.remove(node);
+    map.remove(previous);
     node.value = object;
-    map.put(node, node);
+    map.put(object, node);
 
     return previous;
   }
@@ -261,7 +261,7 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
     Object[] array = new Object[list.size()];
 
     for (int i = 0, j = array.length; i < j; ++i) {
-      array[i] = list.get(i);
+      array[i] = list.get(i).value;
     }
 
     return array;
@@ -317,7 +317,7 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
     @Override
     public void remove() {
       iterator.remove();
-      set.map.remove(node);
+      set.map.remove(node.value);
     }
 
     @Override
@@ -325,7 +325,7 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
       node = new Node<>(iterator.previousIndex() + 1, object);
 
       iterator.add(node);
-      set.map.put(node, node);
+      set.map.put(object, node);
     }
 
     @Override
@@ -352,9 +352,9 @@ public class CanonicalSet<T> implements List<T>, Set<T> {
     @Override
     public void set(T object) {
       // This will change the hash, so we need to replace it in the map.
-      set.map.remove(node);
+      set.map.remove(node.value);
       node.value = object;
-      set.map.put(node, node);
+      set.map.put(object, node);
     }
   }
 
