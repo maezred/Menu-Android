@@ -26,6 +26,17 @@ public class DetailActivity extends WrapperActivity {
   }
 
   @Override
+  protected Bundle getBundle() {
+    Intent intent = getIntent();
+
+    if (intent != null) {
+      return intent.getBundleExtra(BUNDLE);
+    }
+
+    return null;
+  }
+
+  @Override
   protected Fragment onCreateFragment() {
     return new DetailFragment();
   }
