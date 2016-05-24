@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.trello.rxlifecycle.FragmentEvent;
 
+import io.mdx.app.menu.Action;
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.Cache;
 import io.mdx.app.menu.model.MenuItem;
@@ -18,6 +19,8 @@ import rx.functions.Action1;
  * Created by moltendorf on 16/5/19.
  */
 public class DetailFragment extends BaseFragment {
+  public static final Action ACTION_DETAIL = new Action("DETAIL");
+
   private static final String ITEM_ID = "ITEM_ID";
 
   public static Bundle createBundle(int itemId) {

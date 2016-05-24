@@ -20,24 +20,26 @@ abstract public class ItemRecyclerFragment extends RecyclerFragment {
   }
 
   protected void registerItemHolderFactory(ItemHolder.Factory factory) {
-    factory.created()
-      .compose(this.<ItemHolder>bindUntilEvent(FragmentEvent.DESTROY))
-      .subscribe(new Action1<ItemHolder>() {
-        @Override
-        public void call(final ItemHolder itemHolder) {
-          RxView.clicks(itemHolder.itemView)
-            .compose(ItemRecyclerFragment.this.<Void>bindUntilEvent(FragmentEvent.DESTROY))
-            .subscribe(new Action1<Void>() {
-              @Override
-              public void call(Void aVoid) {
-                MenuItem item   = itemHolder.getObject();
-                Bundle   bundle = DetailFragment.createBundle(item.getId());
-                Intent   intent = DetailActivity.createIntent(getContext(), bundle);
+    if (DetailFragment.ACTION_DETAIL.isEnabled()) {
+      factory.created()
+        .compose(this.<ItemHolder>bindUntilEvent(FragmentEvent.DESTROY))
+        .subscribe(new Action1<ItemHolder>() {
+          @Override
+          public void call(final ItemHolder itemHolder) {
+            RxView.clicks(itemHolder.itemView)
+              .compose(ItemRecyclerFragment.this.<Void>bindUntilEvent(FragmentEvent.DESTROY))
+              .subscribe(new Action1<Void>() {
+                @Override
+                public void call(Void aVoid) {
+                  MenuItem item   = itemHolder.getObject();
+                  Bundle   bundle = DetailFragment.createBundle(item.getId());
+                  Intent   intent = DetailActivity.createIntent(getContext(), bundle);
 
-                startActivity(intent);
-              }
-            });
-        }
-      });
+                  startActivity(intent);
+                }
+              });
+          }
+        });
+    }
   }
 }

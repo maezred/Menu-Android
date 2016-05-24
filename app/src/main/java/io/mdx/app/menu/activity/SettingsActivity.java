@@ -22,6 +22,7 @@ import android.view.MenuItem;
 
 import java.util.List;
 
+import io.mdx.app.menu.Action;
 import io.mdx.app.menu.R;
 
 /**
@@ -36,7 +37,7 @@ import io.mdx.app.menu.R;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
-  public static final String ACTION_SETTINGS = "io.mdx.app.menu.SETTINGS";
+  public static final Action ACTION_SETTINGS = new Action("SETTINGS");
 
   /**
    * A preference value change listener that updates the preference's summary

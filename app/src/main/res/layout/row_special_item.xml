@@ -9,7 +9,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorRowBackground"
-    android:contentDescription="@string/placeholder_picture_description"/>
+    android:contentDescription="@string/placeholder_picture_description"
+    android:scaleType="centerCrop"/>
 
   <LinearLayout
     android:layout_width="match_parent"
