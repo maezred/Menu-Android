@@ -20,6 +20,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+        mexxis {
+            applicationId "com.mexxis.app.menu"
+        }
+    }
 }
 
 repositories {
