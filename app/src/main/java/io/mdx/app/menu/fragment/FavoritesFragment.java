@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import io.mdx.app.menu.Action;
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.favorites.Favorites;
 import io.mdx.app.menu.model.MenuItem;
@@ -21,7 +22,7 @@ import rx.functions.Func1;
  * Created by moltendorf on 16/4/29.
  */
 public class FavoritesFragment extends ItemRecyclerFragment {
-  public static final String ACTION_FAVORITES = "io.mdx.app.menu.FAVORITES";
+  public static final Action ACTION_FAVORITES = new Action("FAVORITES");
 
   private static FragmentType TYPE = FragmentType.FAVORITES;
 

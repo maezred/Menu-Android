@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import io.mdx.app.menu.Action;
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.model.Menu;
@@ -23,7 +24,7 @@ import rx.functions.Func1;
  * Created by moltendorf on 16/4/29.
  */
 public class MenuFragment extends ItemRecyclerFragment {
-  public static final String ACTION_MENU = "io.mdx.app.menu.MENU";
+  public static final Action ACTION_MENU = new Action("MENU");
 
   private static FragmentType TYPE = FragmentType.MENU;
 
