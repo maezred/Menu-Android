@@ -1,6 +1,8 @@
 package io.mdx.app.menu;
 
 import android.app.Application;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 
 import timber.log.Timber;
 
@@ -16,6 +18,14 @@ public class MenuApplication extends Application {
 
   public static String getAction(String action) {
     return String.format("%s.%s", instance.getPackageName(), action);
+  }
+
+  public static boolean actionEnabled(String action) {
+    Intent intent = new Intent(action);
+
+    return instance.getPackageManager()
+      .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+      .size() > 0;
   }
 
   @Override
