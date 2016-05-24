@@ -29,6 +29,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
+
     <activity
       android:name=".activity.DetailActivity"
       android:label="@string/title_activity_details"
@@ -43,6 +44,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
+
     <activity
       android:name=".activity.SettingsActivity"
       android:label="@string/title_activity_settings"
