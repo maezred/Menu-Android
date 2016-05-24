@@ -39,7 +39,7 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value="io.mdx.app.menu.activity.MainActivity"/>
       <intent-filter>
-        <action android:name="${applicationId}.DETAIL"/>
+        <!--<action android:name="${applicationId}.DETAIL"/>-->
 
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
@@ -53,7 +53,7 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value="io.mdx.app.menu.activity.MainActivity"/>
       <intent-filter>
-        <action android:name="${applicationId}.SETTINGS"/>
+        <!--<action android:name="${applicationId}.SETTINGS"/>-->
 
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
