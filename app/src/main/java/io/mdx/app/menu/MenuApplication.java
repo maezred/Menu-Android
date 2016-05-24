@@ -14,6 +14,10 @@ public class MenuApplication extends Application {
     return instance;
   }
 
+  public static String getAction(String action) {
+    return String.format("%s.%s", instance.getPackageName(), action);
+  }
+
   @Override
   public void onCreate() {
     super.onCreate();

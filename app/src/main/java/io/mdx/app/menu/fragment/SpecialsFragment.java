@@ -9,6 +9,7 @@ import net.moltendorf.android.recyclerviewadapter.RecyclerViewAdapter;
 
 import java.util.Set;
 
+import io.mdx.app.menu.MenuApplication;
 import io.mdx.app.menu.R;
 import io.mdx.app.menu.data.Backend;
 import io.mdx.app.menu.model.Specials;
@@ -21,7 +22,7 @@ import rx.functions.Action1;
  * Created by moltendorf on 16/4/29.
  */
 public class SpecialsFragment extends ItemRecyclerFragment {
-  public static final String ACTION_SPECIALS = "io.mdx.app.menu.SPECIALS";
+  public static final String ACTION_SPECIALS = MenuApplication.getAction("SPECIALS");
 
   private static FragmentType TYPE = FragmentType.SPECIALS;
 

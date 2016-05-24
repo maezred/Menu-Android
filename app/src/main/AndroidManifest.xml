@@ -22,9 +22,9 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
       <intent-filter>
-        <action android:name="io.mdx.app.menu.SPECIALS"/>
-        <action android:name="io.mdx.app.menu.MENU"/>
-        <action android:name="io.mdx.app.menu.FAVORITES"/>
+        <action android:name="${applicationId}.SPECIALS"/>
+        <action android:name="${applicationId}.MENU"/>
+        <action android:name="${applicationId}.FAVORITES"/>
 
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
@@ -46,7 +46,7 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value="io.mdx.app.menu.activity.MainActivity"/>
       <intent-filter>
-        <action android:name="io.mdx.app.menu.SETTINGS"/>
+        <action android:name="${applicationId}.SETTINGS"/>
 
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
