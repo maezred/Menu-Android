@@ -3,6 +3,9 @@ package io.mdx.app.menu;
 import android.app.Application;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -20,12 +23,19 @@ public class MenuApplication extends Application {
     return String.format("%s.%s", instance.getPackageName(), action);
   }
 
+  public static boolean actionDisabled(String action) {
+    return getActionInfo(action).size() == 0;
+  }
+
   public static boolean actionEnabled(String action) {
+    return getActionInfo(action).size() > 0;
+  }
+
+  public static List<ResolveInfo> getActionInfo(String action) {
     Intent intent = new Intent(action);
 
     return instance.getPackageManager()
-      .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
-      .size() > 0;
+      .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
   }
 
   @Override
