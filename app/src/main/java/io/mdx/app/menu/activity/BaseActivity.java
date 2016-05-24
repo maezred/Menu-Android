@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
+import io.mdx.app.menu.MenuApplication;
 import io.mdx.app.menu.R;
 
 /**
@@ -34,6 +35,10 @@ abstract public class BaseActivity extends RxAppCompatActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu_main, menu);
+
+    if (MenuApplication.actionDisabled(SettingsActivity.ACTION_SETTINGS)) {
+      menu.findItem(R.id.action_settings).setVisible(false);
+    }
 
     return true;
   }
