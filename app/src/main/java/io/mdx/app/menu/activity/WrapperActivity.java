@@ -1,5 +1,6 @@
 package io.mdx.app.menu.activity;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.FrameLayout;
 
@@ -24,10 +25,21 @@ abstract public class WrapperActivity extends BaseActivity {
     setupFragment();
   }
 
+  protected Bundle getBundle() {
+    return null;
+  }
+
   protected void setupFragment() {
+    Fragment fragment = onCreateFragment();
+    Bundle   bundle   = getBundle();
+
+    if (bundle != null) {
+      fragment.setArguments(bundle);
+    }
+
     getSupportFragmentManager()
       .beginTransaction()
-      .replace(R.id.container, onCreateFragment())
+      .replace(R.id.container, fragment)
       .commit();
   }
 
