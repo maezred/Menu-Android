@@ -1,6 +1,5 @@
 package io.mdx.app.menu.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -9,7 +8,6 @@ import android.view.MenuItem;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
-import io.mdx.app.menu.MenuApplication;
 import io.mdx.app.menu.R;
 
 /**
@@ -36,7 +34,7 @@ abstract public class BaseActivity extends RxAppCompatActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu_main, menu);
 
-    if (MenuApplication.actionDisabled(SettingsActivity.ACTION_SETTINGS)) {
+    if (!SettingsActivity.ACTION_SETTINGS.isEnabled()) {
       menu.findItem(R.id.action_settings).setVisible(false);
     }
 
@@ -49,7 +47,7 @@ abstract public class BaseActivity extends RxAppCompatActivity {
 
 
     if (id == R.id.action_settings) {
-      startActivity(new Intent(SettingsActivity.ACTION_SETTINGS));
+      startActivity(SettingsActivity.ACTION_SETTINGS.getIntent());
 
       return true;
     }
