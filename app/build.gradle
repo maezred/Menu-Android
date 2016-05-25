@@ -21,6 +21,8 @@ android {
         }
     }
     productFlavors {
+        base {}
+
         mexxis {
             applicationId "com.mexxis.app.menu"
         }
