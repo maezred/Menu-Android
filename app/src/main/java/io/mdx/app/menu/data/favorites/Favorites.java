@@ -43,6 +43,8 @@ public class Favorites {
         public void run() {
           Database.getInstance().getWritableDatabase()
             .execSQL(SQL.CREATE_TABLE);
+
+          Timber.d("Favorites table created.");
         }
       })
       .subscribe();

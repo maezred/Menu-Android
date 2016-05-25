@@ -34,6 +34,11 @@ public class Database extends SQLiteOpenHelper {
     return SCHEDULER;
   }
 
+  static {
+    // Make sure we get first dibs on the scheduler to create the database if needed.
+    INSTANCE.getWritableDatabase();
+  }
+
   private Database() {
     super(MenuApplication.getInstance().getApplicationContext(), DB_NAME, null, DB_VERSION);
   }
