@@ -24,7 +24,25 @@ import rx.functions.Func1;
 public class FavoritesFragment extends ItemRecyclerFragment {
   public static final Action ACTION_FAVORITES = new Action("FAVORITES");
 
-  private static FragmentType TYPE = FragmentType.FAVORITES;
+  private static Factory<FavoritesFragment> factory = new Factory<FavoritesFragment>() {
+    @Override
+    public Action getAction() {
+      return ACTION_FAVORITES;
+    }
+
+    @Override
+    public FavoritesFragment newInstance() {
+      return FavoritesFragment.newInstance();
+    }
+  };
+
+  public static Factory<FavoritesFragment> getFactory() {
+    return factory;
+  }
+
+  public static FavoritesFragment newInstance() {
+    return new FavoritesFragment();
+  }
 
   public FavoritesFragment() {
     super(R.layout.fragment_favorites_list);
@@ -68,18 +86,6 @@ public class FavoritesFragment extends ItemRecyclerFragment {
       }
 
       fetchData();
-    }
-  }
-
-  public static class Factory implements FragmentFactory<FavoritesFragment> {
-    @Override
-    public FragmentType getType() {
-      return TYPE;
-    }
-
-    @Override
-    public FavoritesFragment newInstance() {
-      return new FavoritesFragment();
     }
   }
 }
