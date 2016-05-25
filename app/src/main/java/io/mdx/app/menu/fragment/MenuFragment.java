@@ -26,7 +26,25 @@ import rx.functions.Func1;
 public class MenuFragment extends ItemRecyclerFragment {
   public static final Action ACTION_MENU = new Action("MENU");
 
-  private static FragmentType TYPE = FragmentType.MENU;
+  private static Factory<MenuFragment> factory = new Factory<MenuFragment>() {
+    @Override
+    public Action getAction() {
+      return ACTION_MENU;
+    }
+
+    @Override
+    public MenuFragment newInstance() {
+      return MenuFragment.newInstance();
+    }
+  };
+
+  public static Factory<MenuFragment> getFactory() {
+    return factory;
+  }
+
+  public static MenuFragment newInstance() {
+    return new MenuFragment();
+  }
 
   public MenuFragment() {
     super(R.layout.fragment_menu);
@@ -66,17 +84,5 @@ public class MenuFragment extends ItemRecyclerFragment {
           changeDataSet(list);
         }
       });
-  }
-
-  public static class Factory implements FragmentFactory<MenuFragment> {
-    @Override
-    public FragmentType getType() {
-      return TYPE;
-    }
-
-    @Override
-    public MenuFragment newInstance() {
-      return new MenuFragment();
-    }
   }
 }

@@ -24,7 +24,25 @@ import rx.functions.Action1;
 public class SpecialsFragment extends ItemRecyclerFragment {
   public static final Action ACTION_SPECIALS = new Action("SPECIALS");
 
-  private static FragmentType TYPE = FragmentType.SPECIALS;
+  private static Factory<SpecialsFragment> factory = new Factory<SpecialsFragment>() {
+    @Override
+    public Action getAction() {
+      return ACTION_SPECIALS;
+    }
+
+    @Override
+    public SpecialsFragment newInstance() {
+      return SpecialsFragment.newInstance();
+    }
+  };
+
+  public static Factory<SpecialsFragment> getFactory() {
+    return factory;
+  }
+
+  public static SpecialsFragment newInstance() {
+    return new SpecialsFragment();
+  }
 
   public SpecialsFragment() {
     super(R.layout.fragment_specials_list);
@@ -77,17 +95,5 @@ public class SpecialsFragment extends ItemRecyclerFragment {
         return false;
       }
     });
-  }
-
-  public static class Factory implements FragmentFactory<SpecialsFragment> {
-    @Override
-    public FragmentType getType() {
-      return TYPE;
-    }
-
-    @Override
-    public SpecialsFragment newInstance() {
-      return new SpecialsFragment();
-    }
   }
 }

@@ -16,16 +16,28 @@ public class Action {
   private String action;
   private String local;
 
+  private String name;
+
   public Action(String local) {
     this.local = local;
 
     action = String.format("%s.%s", packageName, local);
     intent = new Intent(action);
 
-    enabled = MenuApplication.getInstance()
-      .getPackageManager()
+    MenuApplication application = MenuApplication.getInstance();
+
+    enabled = application.getPackageManager()
       .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
       .size() > 0;
+
+    int resource = application.getResources()
+      .getIdentifier(String.format("action_%s", local.toLowerCase()), "string", packageName);
+
+    if (resource != 0) {
+      name = application.getString(resource);
+    } else {
+      name = local;
+    }
   }
 
   public Intent getIntent() {
@@ -42,6 +54,10 @@ public class Action {
 
   public boolean isEnabled() {
     return enabled;
+  }
+
+  public String getName() {
+    return name;
   }
 
   @Override
