@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
@@ -8,10 +8,14 @@
     android:id="@+id/item_picture"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_alignBottom="@+id/wrap"
+    android:layout_alignTop="@+id/wrap"
     android:background="@color/colorRowBackground"
-    android:contentDescription="@string/placeholder_picture_description"/>
+    android:contentDescription="@string/placeholder_picture_description"
+    android:scaleType="centerCrop"/>
 
   <LinearLayout
+    android:id="@+id/wrap"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorRowTextBackground"
@@ -72,4 +76,4 @@
         android:padding="@dimen/row_padding"/>
     </LinearLayout>
   </LinearLayout>
-</FrameLayout>
+</RelativeLayout>
